@@ -1,0 +1,258 @@
+/**
+ * Display-only demo data for the public boards.
+ *
+ * These are illustrative placeholder cards shown ONLY when a board has no real
+ * data yet (no real borrower requests / no real lender products). They are NOT
+ * stored in the database and never participate in the real contact flow — the
+ * cards render with a sample (disabled) Contact button. Safe to delete this file
+ * and its two imports once real data exists.
+ */
+import type { PublicPreview, ProductCardData } from "@/components/cards";
+
+/** ~16 sample borrower loan requests. display_name is a nickname, never a real name. */
+export const DEMO_LOAN_REQUESTS: PublicPreview[] = [
+  {
+    id: "demo-lr-01", loan_category: "mortgage", province: "ON", city: "Toronto",
+    amount_range: "$500,000 – $1,000,000", purpose_category: "Home purchase",
+    secured_status: "secured", loan_term_range: "20+ years",
+    created_at: "2026-05-30T14:00:00Z", display_name: "FirstHomeON",
+  },
+  {
+    id: "demo-lr-02", loan_category: "personal", province: "BC", city: "Vancouver",
+    amount_range: "$10,000 – $25,000", purpose_category: "Debt consolidation",
+    secured_status: "unsecured", loan_term_range: "3 – 5 years",
+    created_at: "2026-05-29T10:30:00Z", display_name: "CoastSaver",
+  },
+  {
+    id: "demo-lr-03", loan_category: "auto", province: "AB", city: "Calgary",
+    amount_range: "$25,000 – $50,000", purpose_category: "Vehicle purchase",
+    secured_status: "secured", loan_term_range: "5 – 10 years",
+    created_at: "2026-05-29T08:15:00Z", display_name: "PrairieDrive",
+  },
+  {
+    id: "demo-lr-04", loan_category: "business", province: "ON", city: "Ottawa",
+    amount_range: "$100,000 – $250,000", purpose_category: "Business / working capital",
+    secured_status: "either", loan_term_range: "1 – 3 years",
+    created_at: "2026-05-28T16:45:00Z", display_name: "CapitalCafe",
+  },
+  {
+    id: "demo-lr-05", loan_category: "debt_consolidation", province: "QC", city: "Montreal",
+    amount_range: "$25,000 – $50,000", purpose_category: "Debt consolidation",
+    secured_status: "unsecured", loan_term_range: "3 – 5 years",
+    created_at: "2026-05-28T11:00:00Z", display_name: "MtlFreshStart",
+  },
+  {
+    id: "demo-lr-06", loan_category: "home_equity", province: "BC", city: "Surrey",
+    amount_range: "$100,000 – $250,000", purpose_category: "Home improvement / renovation",
+    secured_status: "secured", loan_term_range: "10 – 20 years",
+    created_at: "2026-05-27T19:20:00Z", display_name: "RenoReady",
+  },
+  {
+    id: "demo-lr-07", loan_category: "refinance", province: "ON", city: "Mississauga",
+    amount_range: "$250,000 – $500,000", purpose_category: "Refinance",
+    secured_status: "secured", loan_term_range: "20+ years",
+    created_at: "2026-05-27T09:05:00Z", display_name: "RateRethink",
+  },
+  {
+    id: "demo-lr-08", loan_category: "personal", province: "NS", city: "Halifax",
+    amount_range: "$5,000 – $10,000", purpose_category: "Medical expenses",
+    secured_status: "unsecured", loan_term_range: "1 – 3 years",
+    created_at: "2026-05-26T13:40:00Z", display_name: "EastCoastEmma",
+  },
+  {
+    id: "demo-lr-09", loan_category: "auto", province: "MB", city: "Winnipeg",
+    amount_range: "$10,000 – $25,000", purpose_category: "Vehicle purchase",
+    secured_status: "secured", loan_term_range: "3 – 5 years",
+    created_at: "2026-05-26T07:55:00Z", display_name: "WpgCommuter",
+  },
+  {
+    id: "demo-lr-10", loan_category: "business", province: "SK", city: "Saskatoon",
+    amount_range: "$50,000 – $100,000", purpose_category: "Business / working capital",
+    secured_status: "either", loan_term_range: "1 – 3 years",
+    created_at: "2026-05-25T15:10:00Z", display_name: "GrainGrowth",
+  },
+  {
+    id: "demo-lr-11", loan_category: "personal", province: "ON", city: "London",
+    amount_range: "$10,000 – $25,000", purpose_category: "Home improvement / renovation",
+    secured_status: "unsecured", loan_term_range: "3 – 5 years",
+    created_at: "2026-05-24T10:20:00Z", display_name: "ForestCityReno",
+  },
+  {
+    id: "demo-lr-12", loan_category: "mortgage", province: "BC", city: "Victoria",
+    amount_range: "$500,000 – $1,000,000", purpose_category: "Home purchase",
+    secured_status: "secured", loan_term_range: "20+ years",
+    created_at: "2026-05-24T08:00:00Z", display_name: "IslandBuyer",
+  },
+  {
+    id: "demo-lr-13", loan_category: "debt_consolidation", province: "AB", city: "Edmonton",
+    amount_range: "$25,000 – $50,000", purpose_category: "Debt consolidation",
+    secured_status: "unsecured", loan_term_range: "3 – 5 years",
+    created_at: "2026-05-23T14:30:00Z", display_name: "YEGreset",
+  },
+  {
+    id: "demo-lr-14", loan_category: "business", province: "QC", city: "Quebec City",
+    amount_range: "$50,000 – $100,000", purpose_category: "Business / working capital",
+    secured_status: "either", loan_term_range: "1 – 3 years",
+    created_at: "2026-05-23T09:45:00Z", display_name: "VieuxQuebecCo",
+  },
+  {
+    id: "demo-lr-15", loan_category: "auto", province: "ON", city: "Hamilton",
+    amount_range: "$25,000 – $50,000", purpose_category: "Vehicle purchase",
+    secured_status: "secured", loan_term_range: "5 – 10 years",
+    created_at: "2026-05-22T16:10:00Z", display_name: "SteelTownRide",
+  },
+  {
+    id: "demo-lr-16", loan_category: "home_equity", province: "NB", city: "Fredericton",
+    amount_range: "$50,000 – $100,000", purpose_category: "Home improvement / renovation",
+    secured_status: "secured", loan_term_range: "10 – 20 years",
+    created_at: "2026-05-22T07:30:00Z", display_name: "MaritimeEquity",
+  },
+];
+
+/** ~16 sample lender products. No contact fields — connection is in-platform only. */
+export const DEMO_PRODUCTS: ProductCardData[] = [
+  {
+    id: "demo-pr-01", product_title: "Low-rate first mortgage", loan_category: "mortgage",
+    service_area: "Ontario", amount_range: "$300,000 – $1,000,000", term_range: "20+ years",
+    rate_range: "4% – 6%", secured_status: "secured",
+    product_description: "Competitive fixed and variable options for qualified first-time and move-up buyers.",
+    important_conditions: "Subject to credit review and property appraisal.",
+    created_at: "2026-05-30T12:00:00Z", business_name: "Maple Ridge Mortgage", is_private_lender: false,
+    licence_number: "M26000130",
+  },
+  {
+    id: "demo-pr-02", product_title: "Debt consolidation loan", loan_category: "debt_consolidation",
+    service_area: "Canada-wide", amount_range: "$10,000 – $50,000", term_range: "3 – 5 years",
+    rate_range: "8% – 12%", secured_status: "unsecured",
+    product_description: "Combine multiple balances into one predictable monthly payment.",
+    important_conditions: "Rate depends on credit profile and income verification.",
+    created_at: "2026-05-29T12:00:00Z", business_name: "TrueNorth Lending", is_private_lender: false,
+    licence_number: "L26000211",
+  },
+  {
+    id: "demo-pr-03", product_title: "Auto financing", loan_category: "auto",
+    service_area: "Alberta", amount_range: "$15,000 – $60,000", term_range: "5 – 10 years",
+    rate_range: "6% – 8%", secured_status: "secured",
+    product_description: "New and used vehicle financing with flexible terms.",
+    important_conditions: "Vehicle serves as collateral.",
+    created_at: "2026-05-29T09:00:00Z", business_name: "Prairie Auto Finance", is_private_lender: false,
+    licence_number: "A26000044",
+  },
+  {
+    id: "demo-pr-04", product_title: "Small business term loan", loan_category: "business",
+    service_area: "Ontario & Quebec", amount_range: "$50,000 – $250,000", term_range: "1 – 3 years",
+    rate_range: "8% – 12%", secured_status: "either",
+    product_description: "Working capital for established small businesses.",
+    important_conditions: "Minimum 2 years in operation.",
+    created_at: "2026-05-28T12:00:00Z", business_name: "Summit Business Capital", is_private_lender: false,
+    licence_number: "B26000097",
+  },
+  {
+    id: "demo-pr-05", product_title: "Private second mortgage", loan_category: "home_equity",
+    service_area: "Greater Toronto Area", amount_range: "$50,000 – $200,000", term_range: "1 – 3 years",
+    rate_range: "12% – 18%", secured_status: "secured",
+    product_description: "Equity-based lending for renovations, consolidation, or bridge needs.",
+    important_conditions: "Based on property equity; private lender terms apply.",
+    created_at: "2026-05-28T08:00:00Z", business_name: "Keystone Private Capital", is_private_lender: true,
+    licence_number: null,
+  },
+  {
+    id: "demo-pr-06", product_title: "Mortgage refinance", loan_category: "refinance",
+    service_area: "British Columbia", amount_range: "$200,000 – $800,000", term_range: "20+ years",
+    rate_range: "4% – 6%", secured_status: "secured",
+    product_description: "Refinance to access equity or improve your rate.",
+    important_conditions: "Subject to appraisal and qualification.",
+    created_at: "2026-05-27T12:00:00Z", business_name: "Pacific Coast Mortgage", is_private_lender: false,
+    licence_number: "M26000512",
+  },
+  {
+    id: "demo-pr-07", product_title: "Personal installment loan", loan_category: "personal",
+    service_area: "Canada-wide", amount_range: "$5,000 – $25,000", term_range: "1 – 3 years",
+    rate_range: "12% – 18%", secured_status: "unsecured",
+    product_description: "Fast, fixed-rate personal loans for a range of needs.",
+    important_conditions: "Approval and rate based on credit assessment.",
+    created_at: "2026-05-27T07:00:00Z", business_name: "Beacon Personal Finance", is_private_lender: false,
+    licence_number: "L26000388",
+  },
+  {
+    id: "demo-pr-08", product_title: "Home equity line", loan_category: "home_equity",
+    service_area: "Ontario", amount_range: "$50,000 – $300,000", term_range: "10 – 20 years",
+    rate_range: "6% – 8%", secured_status: "secured",
+    product_description: "Flexible access to your home's equity as you need it.",
+    important_conditions: "Secured against your property; subject to qualification.",
+    created_at: "2026-05-26T12:00:00Z", business_name: "Maple Ridge Mortgage", is_private_lender: false,
+    licence_number: "M26000130",
+  },
+  {
+    id: "demo-pr-09", product_title: "Bridge financing", loan_category: "other",
+    service_area: "Greater Vancouver", amount_range: "$100,000 – $500,000", term_range: "Under 1 year",
+    rate_range: "12% – 18%", secured_status: "secured",
+    product_description: "Short-term financing to bridge the gap between buying and selling.",
+    important_conditions: "Short-term; private lender terms apply.",
+    created_at: "2026-05-26T06:00:00Z", business_name: "Harbour Private Lending", is_private_lender: true,
+    licence_number: null,
+  },
+  {
+    id: "demo-pr-10", product_title: "Construction loan", loan_category: "other",
+    service_area: "Alberta", amount_range: "$250,000 – $1,000,000", term_range: "1 – 3 years",
+    rate_range: "8% – 12%", secured_status: "secured",
+    product_description: "Draw-based financing for residential construction and major renovations.",
+    important_conditions: "Funds released by construction stage; appraisal required.",
+    created_at: "2026-05-25T12:00:00Z", business_name: "Cornerstone Build Finance", is_private_lender: false,
+    licence_number: "B26000150",
+  },
+  {
+    id: "demo-pr-11", product_title: "Self-employed mortgage", loan_category: "mortgage",
+    service_area: "Ontario", amount_range: "$300,000 – $900,000", term_range: "20+ years",
+    rate_range: "4% – 6%", secured_status: "secured",
+    product_description: "Mortgage solutions for self-employed and commission-based income.",
+    important_conditions: "Alternative income documentation accepted; subject to review.",
+    created_at: "2026-05-24T12:00:00Z", business_name: "TrueNorth Lending", is_private_lender: false,
+    licence_number: "L26000211",
+  },
+  {
+    id: "demo-pr-12", product_title: "Quick personal loan", loan_category: "personal",
+    service_area: "Canada-wide", amount_range: "Under $5,000", term_range: "Under 1 year",
+    rate_range: "18%+", secured_status: "unsecured",
+    product_description: "Small, short-term personal loans with fast decisions.",
+    important_conditions: "Higher rate reflects short term and no collateral.",
+    created_at: "2026-05-24T07:00:00Z", business_name: "Beacon Personal Finance", is_private_lender: false,
+    licence_number: "L26000388",
+  },
+  {
+    id: "demo-pr-13", product_title: "Commercial real estate loan", loan_category: "business",
+    service_area: "Greater Toronto Area", amount_range: "$250,000 – $1,000,000", term_range: "3 – 5 years",
+    rate_range: "6% – 8%", secured_status: "secured",
+    product_description: "Financing for owner-occupied and investment commercial property.",
+    important_conditions: "Subject to property appraisal and business financials.",
+    created_at: "2026-05-23T12:00:00Z", business_name: "Summit Business Capital", is_private_lender: false,
+    licence_number: "B26000097",
+  },
+  {
+    id: "demo-pr-14", product_title: "RV & boat financing", loan_category: "auto",
+    service_area: "Alberta & Saskatchewan", amount_range: "$25,000 – $100,000", term_range: "5 – 10 years",
+    rate_range: "8% – 12%", secured_status: "secured",
+    product_description: "Recreational vehicle and watercraft loans with seasonal payment options.",
+    important_conditions: "Asset serves as collateral; subject to inspection.",
+    created_at: "2026-05-23T07:00:00Z", business_name: "Prairie Auto Finance", is_private_lender: false,
+    licence_number: "A26000044",
+  },
+  {
+    id: "demo-pr-15", product_title: "Home renovation loan", loan_category: "home_equity",
+    service_area: "British Columbia", amount_range: "$25,000 – $150,000", term_range: "5 – 10 years",
+    rate_range: "6% – 8%", secured_status: "secured",
+    product_description: "Fund renovations using your home equity, with flexible draw options.",
+    important_conditions: "Secured against your property; appraisal may be required.",
+    created_at: "2026-05-22T12:00:00Z", business_name: "Pacific Coast Mortgage", is_private_lender: false,
+    licence_number: "M26000512",
+  },
+  {
+    id: "demo-pr-16", product_title: "Private bridge loan", loan_category: "other",
+    service_area: "Ontario", amount_range: "$100,000 – $500,000", term_range: "Under 1 year",
+    rate_range: "12% – 18%", secured_status: "secured",
+    product_description: "Fast private financing to bridge timing gaps on property transactions.",
+    important_conditions: "Short-term; private lender terms and fees apply.",
+    created_at: "2026-05-22T06:00:00Z", business_name: "Keystone Private Capital", is_private_lender: true,
+    licence_number: null,
+  },
+];
