@@ -1,15 +1,15 @@
 /**
  * Stripe server client.
  *
- * Stripe isn't connected yet (keys go in .env later, before launch). To keep the
- * app building and running in the meantime, this returns `null` when the secret
- * key is absent — callers must handle that case and show "payments not
- * configured yet" rather than crashing.
+ * Stripe isn't fully wired yet (the secret key goes in env before launch). To
+ * keep the app building and running in the meantime, this returns `null` when
+ * the secret key is absent — callers must handle that case and show "payments
+ * not configured yet" rather than crashing.
  *
- * The `stripe` package is imported lazily (require inside the function) so that
- * environments without it installed, or without a key, don't fail at module load.
+ * The `stripe` package is a dependency in package.json, so it's safe to import
+ * at module load. Only the missing-KEY case needs guarding (done below).
  */
-import type Stripe from "stripe";
+import Stripe from "stripe";
 
 let cached: Stripe | null = null;
 
@@ -19,10 +19,7 @@ export function getStripe(): Stripe | null {
   if (!key) return null;
   if (cached) return cached;
 
-  // Lazy require so a missing package/key never breaks module load or build.
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const StripeCtor = require("stripe") as typeof import("stripe");
-  cached = new StripeCtor(key, {
+  cached = new Stripe(key, {
     // Pin a stable API version; adjust when you upgrade the dashboard version.
     apiVersion: "2024-06-20" as Stripe.LatestApiVersion,
     appInfo: { name: "Loan Market" },
