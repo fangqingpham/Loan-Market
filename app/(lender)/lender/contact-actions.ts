@@ -15,7 +15,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase-server";
-import { ROUTES } from "@/lib/constants";
+import { ROUTES, DAILY_CONTACT_LIMIT_MESSAGE } from "@/lib/constants";
 
 const BOARD = ROUTES.loanRequests;
 const LENDER_CR = ROUTES.lenderContactRequests;
@@ -51,6 +51,9 @@ async function redirectToConversation(requestId: string): Promise<void> {
  */
 function friendly(message: string | undefined): string {
   const m = (message ?? "").toLowerCase();
+  if (m.includes("daily_contact_limit_reached")) {
+    return DAILY_CONTACT_LIMIT_MESSAGE;
+  }
   if (m.includes("insufficient_credits")) {
     return "You don't have enough credits to contact this borrower. Please buy more credits and try again.";
   }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Container } from "@/components/layout/Container";
 import { Card, CardContent, Badge, Icon } from "@/components/ui";
 import { startCreditPurchaseAction } from "@/app/credit-actions";
@@ -10,6 +11,7 @@ import {
   CREDIT_PACKS,
   CONTACT_CREDIT_PRICING,
   CREDITS_FEE_DISCLAIMER,
+  PRICING_VISIBLE,
   APP_NAME,
 } from "@/lib/constants";
 
@@ -29,6 +31,9 @@ export default async function CreditsPage({
   searchParams?: { message?: string; error?: string };
 }) {
   const user = await getCurrentUser();
+
+  // Credits/pricing are hidden for now. Flip PRICING_VISIBLE back to true to restore.
+  if (!PRICING_VISIBLE) notFound();
 
   // Show the signed-in user's balance (RLS limits the wallet to the owner).
   let balance: number | null = null;

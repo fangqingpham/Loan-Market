@@ -19,7 +19,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase-server";
 import { getCurrentUserRole } from "@/lib/auth";
-import { ROUTES } from "@/lib/constants";
+import { ROUTES, DAILY_CONTACT_LIMIT_MESSAGE } from "@/lib/constants";
 
 const PRODUCTS = ROUTES.loanProducts;
 
@@ -33,6 +33,7 @@ function str(formData: FormData, key: string): string {
 
 function friendly(message: string | undefined): string {
   const m = (message ?? "").toLowerCase();
+  if (m.includes("daily_contact_limit_reached")) return DAILY_CONTACT_LIMIT_MESSAGE;
   if (m.includes("only borrowers")) return "Only borrowers can contact a lender about a product.";
   if (m.includes("already exists")) return "You already have an active contact request for this product.";
   if (m.includes("not found") || m.includes("not active")) return "That product is no longer available.";

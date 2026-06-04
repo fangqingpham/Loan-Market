@@ -7,6 +7,7 @@ import {
   APP_NAME,
   APP_PROMISE,
   MARKETING_LOAN_CATEGORIES,
+  PRICING_VISIBLE,
   ROUTES,
 } from "@/lib/constants";
 
@@ -157,17 +158,17 @@ export default function HomePage() {
           so the cards sit cleanly over the seam without crowding the text. */}
       <div className="relative z-10 -mt-24 sm:-mt-28">
         <Container>
-          <div className="grid gap-6 sm:grid-cols-3">
+          <div className="grid gap-[1.125rem] sm:grid-cols-3">
             {heroCards.map((card, i) => (
               <div
                 key={card.title}
-                className={`group rounded-2xl bg-accent-600 p-6 text-white shadow-accent-glow transition-all duration-300 hover:-translate-y-2 hover:bg-accent-700 animate-fade-up ${delay(i)}`}
+                className={`group rounded-xl bg-accent-600 p-[1.125rem] text-white shadow-accent-glow transition-all duration-300 hover:-translate-y-2 hover:bg-accent-700 animate-fade-up ${delay(i)}`}
               >
-                <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-white/15 transition-transform duration-300 group-hover:scale-110">
-                  <Icon name={card.icon} className="h-6 w-6 text-white" />
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white/15 transition-transform duration-300 group-hover:scale-110">
+                  <Icon name={card.icon} className="h-[1.125rem] w-[1.125rem] text-white" />
                 </span>
-                <h3 className="mt-4 text-lg font-bold text-white">{card.title}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-white/90">{card.body}</p>
+                <h3 className="mt-3 text-sm font-bold text-white">{card.title}</h3>
+                <p className="mt-1 text-xs leading-relaxed text-white/90">{card.body}</p>
               </div>
             ))}
           </div>
@@ -273,16 +274,17 @@ export default function HomePage() {
             </h2>
             <p className="mt-3 text-base text-slate-600">
               List your products, browse requests in the categories you serve, and connect only
-              with borrowers who approve your request. During launch, licensed lenders get
-              a set number of approved contacts each week at no cost.
+              with borrowers who approve your request. It&apos;s free for lenders during launch.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href={ROUTES.lenders}>
                 <Button variant="outline">Learn more for lenders</Button>
               </Link>
-              <Link href={ROUTES.pricing}>
-                <Button variant="ghost">View pricing</Button>
-              </Link>
+              {PRICING_VISIBLE && (
+                <Link href={ROUTES.pricing}>
+                  <Button variant="ghost">View pricing</Button>
+                </Link>
+              )}
             </div>
           </div>
         </div>

@@ -5,9 +5,8 @@ import { PageIntro } from "@/components/marketing/PageIntro";
 import { CTASection } from "@/components/marketing/CTASection";
 import { Section } from "@/components/marketing/Section";
 import {
-  LENDER_FREE_CONTACTS_PER_WEEK,
-  LAUNCH_FREE_THRESHOLDS,
   LENDER_INTAKE_NOTE,
+  PRICING_VISIBLE,
   ROUTES,
 } from "@/lib/constants";
 
@@ -67,19 +66,18 @@ export default function LendersPage() {
               <div className="space-y-1">
                 <Badge tone="verified">Free during launch</Badge>
                 <p className="text-sm text-slate-700">
-                  Licensed lenders get{" "}
-                  <span className="font-semibold text-slate-900">
-                    {LENDER_FREE_CONTACTS_PER_WEEK} approved contacts per week
-                  </span>{" "}
-                  at no cost. The free launch continues until we reach{" "}
-                  {LAUNCH_FREE_THRESHOLDS.borrowerSignups} borrower posts/signups and{" "}
-                  {LAUNCH_FREE_THRESHOLDS.licensedLenders} licensed lenders.
+                  Licensed lenders connect with borrowers{" "}
+                  <span className="font-semibold text-slate-900">free of charge</span>{" "}
+                  during launch — reach out to borrowers who approve your contact request,
+                  at no cost.
                 </p>
               </div>
             </div>
-            <Link href={ROUTES.pricing} className="shrink-0">
-              <Button variant="outline" size="sm">See pricing</Button>
-            </Link>
+            {PRICING_VISIBLE && (
+              <Link href={ROUTES.pricing} className="shrink-0">
+                <Button variant="outline" size="sm">See pricing</Button>
+              </Link>
+            )}
           </CardContent>
         </Card>
       </Section>

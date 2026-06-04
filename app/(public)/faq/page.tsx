@@ -3,16 +3,12 @@ import { Container } from "@/components/layout/Container";
 import { Icon } from "@/components/ui";
 import { PageIntro } from "@/components/marketing/PageIntro";
 import { CTASection } from "@/components/marketing/CTASection";
-import {
-  APP_NAME,
-  LENDER_FREE_CONTACTS_PER_WEEK,
-  LAUNCH_FREE_THRESHOLDS,
-} from "@/lib/constants";
+import { APP_NAME } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "FAQ",
   description:
-    "Frequently asked questions about how Loan Market works, pricing, privacy, and lender licences.",
+    "Frequently asked questions about how Loan Market works, privacy, and lender licences.",
 };
 
 type QA = { q: string; a: string };
@@ -70,23 +66,15 @@ const groups: Group[] = [
     ],
   },
   {
-    heading: "Pricing",
+    heading: "Cost",
     items: [
       {
-        q: "Is it free for borrowers?",
-        a: "Yes. Borrowers post and connect for free.",
+        q: "Is it free to use?",
+        a: "Yes. During launch, Loan Market is free for both borrowers and lenders — there's no charge to post a request, list a product, or connect when a request is approved.",
       },
       {
-        q: "What do lenders pay during launch?",
-        a: `Nothing. During launch, licensed lenders get ${LENDER_FREE_CONTACTS_PER_WEEK} approved contacts per week at no cost. The free launch continues until we reach ${LAUNCH_FREE_THRESHOLDS.borrowerSignups} borrower posts/signups and ${LAUNCH_FREE_THRESHOLDS.licensedLenders} licensed lenders.`,
-      },
-      {
-        q: "What will lenders pay after launch?",
-        a: "After launch, lenders use credits to contact a borrower. You buy credits in a pack and spend them as you connect; the cost depends on the loan category. See the Pricing page for the per-category credit costs and pack prices.",
-      },
-      {
-        q: "How do credits work?",
-        a: "Credits are how lenders pay to open communication with a borrower. You buy a pack of credits, and each borrower contact costs a number of credits based on the loan category. Credits open platform communication only — they never buy a loan, an offer, or any guarantee of financing.",
+        q: "Is there a limit on how many people I can contact?",
+        a: "To keep the marketplace free of spam, each account can start a small number of new contact requests per day. Conversations you've already opened are never affected, and the limit resets the next day.",
       },
     ],
   },
@@ -98,7 +86,7 @@ export default function FAQPage() {
       <PageIntro
         eyebrow="FAQ"
         title="Frequently asked questions"
-        subtitle="Quick answers about how Loan Market works, privacy, lender licences, and pricing."
+        subtitle="Quick answers about how Loan Market works, privacy, and lender licences."
       />
 
       <section className="py-16 sm:py-20">

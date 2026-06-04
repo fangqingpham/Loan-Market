@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Button, Card, CardContent, CardTitle, Badge, Icon, type IconName } from "@/components/ui";
 import { PageIntro } from "@/components/marketing/PageIntro";
 import { CTASection } from "@/components/marketing/CTASection";
@@ -11,6 +12,7 @@ import {
   CREDIT_PACKS,
   CREDITS_FEE_DISCLAIMER,
   PLATFORM_DISCLAIMER,
+  PRICING_VISIBLE,
   ROUTES,
 } from "@/lib/constants";
 
@@ -36,6 +38,9 @@ const launchPerks: { icon: IconName; text: string }[] = [
 ];
 
 export default function PricingPage() {
+  // Pricing is hidden for now. Flip PRICING_VISIBLE back to true to restore it.
+  if (!PRICING_VISIBLE) notFound();
+
   return (
     <>
       <PageIntro

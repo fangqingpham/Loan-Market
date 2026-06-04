@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { Container } from "@/components/layout/Container";
-import { Button, Card, CardContent, Badge, Icon } from "@/components/ui";
+import { Button, Card, CardContent, Badge, Icon, FlashModal } from "@/components/ui";
 import { PublicLoanRequestCard, type PublicPreview, type LenderExtra } from "@/components/cards";
 import { LoanRequestFilters } from "@/components/forms/LoanRequestFilters";
 import { DEMO_LOAN_REQUESTS } from "@/lib/demo-data";
@@ -131,6 +131,8 @@ export default async function LoanRequestsPage({
     province?: string;
     amount?: string;
     secured?: string;
+    message?: string;
+    error?: string;
   };
 }) {
   const verificationStatus = await getLenderVerificationStatus();
@@ -153,6 +155,9 @@ export default async function LoanRequestsPage({
 
   return (
     <>
+      {/* Flash popup for request-flow messages (e.g. the daily contact limit). */}
+      <FlashModal message={searchParams?.message} error={searchParams?.error} />
+
       {/* Header */}
       <section className="border-b border-slate-200 bg-gradient-to-b from-brand-50 to-white">
         <Container className="py-10 sm:py-12">

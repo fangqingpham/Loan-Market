@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Container } from "./Container";
-import { APP_NAME, APP_PROMISE, ROUTES } from "@/lib/constants";
+import { APP_NAME, APP_PROMISE, ROUTES, PRICING_VISIBLE } from "@/lib/constants";
 
 const footerGroups: { heading: string; links: { href: string; label: string }[] }[] = [
   {
@@ -9,7 +9,8 @@ const footerGroups: { heading: string; links: { href: string; label: string }[] 
       { href: ROUTES.howItWorks, label: "How it works" },
       { href: ROUTES.borrowers, label: "For borrowers" },
       { href: ROUTES.lenders, label: "For lenders" },
-      { href: ROUTES.pricing, label: "Pricing" },
+      // Pricing is hidden while PRICING_VISIBLE is false.
+      ...(PRICING_VISIBLE ? [{ href: ROUTES.pricing, label: "Pricing" }] : []),
     ],
   },
   {

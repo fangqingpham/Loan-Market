@@ -4,7 +4,7 @@ import { Container } from "@/components/layout/Container";
 import { Card, CardContent, CardHeader, CardTitle, Button, Badge, Icon, type IconName } from "@/components/ui";
 import { getCurrentProfile, getLenderProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase-server";
-import { ROUTES, LENDER_FREE_CONTACTS_PER_WEEK } from "@/lib/constants";
+import { ROUTES, DAILY_FREE_CONTACTS_PER_SIDE, PRICING_VISIBLE } from "@/lib/constants";
 import { lenderTypeRequiresLicence } from "@/lib/licence-check";
 import type { LenderVerificationStatus, LicenceVerificationStatus } from "@/types/database";
 
@@ -58,28 +58,31 @@ export default async function LenderDashboardPage({
 
   const licenceFailed = isLicensed && licenceNeedsAttention(licenceStatus);
 
-  // Live weekly approved-contacts count for verified lenders (counts APPROVED,
-  // not pending), computed from this lender's contact_requests for the current
-  // ISO week. RLS restricts these rows to the lender's own requests.
-  let approvedThisWeek = 0;
+  // Live count of NEW contact requests this lender has STARTED today
+  // (America/Toronto day) — the unit the daily anti-spam cap counts. RLS
+  // restricts these rows to the lender's own requests.
+  let sentToday = 0;
   let creditBalance = 0;
   if (isVerified && profile) {
     const supabase = createClient();
-    const startOfWeek = new Date();
-    const dow = (startOfWeek.getUTCDay() + 6) % 7; // Monday = 0
-    startOfWeek.setUTCDate(startOfWeek.getUTCDate() - dow);
-    startOfWeek.setUTCHours(0, 0, 0, 0);
+    const torontoDay = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "America/Toronto",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const todayTor = torontoDay.format(new Date());
     const { data: crData } = await supabase
       .from("contact_requests")
-      .select("status, approved_at")
-      .eq("direction", "lender_to_borrower")
-      .eq("status", "approved");
-    type Row = { status: string; approved_at: string | null };
+      .select("requested_at")
+      .eq("direction", "lender_to_borrower");
+    type Row = { requested_at: string };
     for (const r of (crData as Row[] | null) ?? []) {
-      if (r.approved_at && new Date(r.approved_at) >= startOfWeek) approvedThisWeek += 1;
+      if (torontoDay.format(new Date(r.requested_at)) === todayTor) sentToday += 1;
     }
 
-    // Credit balance (RLS limits the wallet to the owner).
+    // Credit balance (RLS limits the wallet to the owner). Dormant while pricing
+    // is hidden; the card below only renders when PRICING_VISIBLE is true.
     const { data: walletData } = await supabase
       .from("credit_wallets")
       .select("balance")
@@ -182,31 +185,31 @@ export default async function LenderDashboardPage({
         </CardContent>
       </Card>
 
-      {/* Weekly free-contacts placeholder */}
+      {/* Daily free-contacts usage */}
       <Card className="mt-6">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Icon name="spark" className="h-4 w-4 text-verified-700" />
-            Free approved contacts this week
+            New contacts today
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-baseline gap-2">
             <span className="text-2xl font-bold text-slate-900">
-              {isVerified ? `${approvedThisWeek} / ${LENDER_FREE_CONTACTS_PER_WEEK}` : "—"}
+              {isVerified ? `${sentToday} / ${DAILY_FREE_CONTACTS_PER_SIDE}` : "—"}
             </span>
-            <span className="text-sm text-slate-500">used this week</span>
+            <span className="text-sm text-slate-500">used today</span>
           </div>
           <p className="mt-1 text-xs text-slate-500">
             {isVerified
-              ? "During launch, licensed lenders get a set number of free approved contacts each week. Approved contacts count toward this limit; pending requests do not."
+              ? "To keep the marketplace free of spam, you can start up to a set number of new contact requests each day. The limit resets tomorrow; conversations already open are never affected."
               : "Available once your account is active."}
           </p>
         </CardContent>
       </Card>
 
-      {/* Credits wallet (verified lenders) */}
-      {isVerified && (
+      {/* Credits wallet (verified lenders) — hidden while pricing is hidden. */}
+      {isVerified && PRICING_VISIBLE && (
         <Card className="mt-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">

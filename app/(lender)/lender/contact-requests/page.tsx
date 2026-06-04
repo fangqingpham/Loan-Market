@@ -8,7 +8,7 @@ import {
   rejectListingContactAction,
 } from "@/app/(lender)/lender/contact-actions";
 import { createClient } from "@/lib/supabase-server";
-import { ROUTES, LENDER_FREE_CONTACTS_PER_WEEK } from "@/lib/constants";
+import { ROUTES, DAILY_FREE_CONTACTS_PER_SIDE } from "@/lib/constants";
 import { formatDate } from "@/lib/helpers";
 import type { ContactRequestStatus } from "@/types/database";
 
@@ -91,13 +91,17 @@ export default async function LenderContactRequestsPage({
     for (const l of (llData as ListingRow[] | null) ?? []) listingById.set(l.id, l);
   }
 
-  // Weekly approved-contacts used (counts lender→borrower approvals).
-  const startOfWeek = new Date();
-  const day = (startOfWeek.getUTCDay() + 6) % 7;
-  startOfWeek.setUTCDate(startOfWeek.getUTCDate() - day);
-  startOfWeek.setUTCHours(0, 0, 0, 0);
-  const approvedThisWeek = sent.filter(
-    (r) => r.status === "approved" && r.approved_at && new Date(r.approved_at) >= startOfWeek
+  // Contact requests this lender has STARTED today (America/Toronto day) — the
+  // unit the daily anti-spam cap counts. Mirrors the SQL in migration 0009.
+  const torontoDay = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Toronto",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const todayTor = torontoDay.format(new Date());
+  const sentToday = sent.filter(
+    (r) => torontoDay.format(new Date(r.requested_at)) === todayTor
   ).length;
 
   const incomingPending = incoming.filter((r) => r.status === "pending");
@@ -125,13 +129,13 @@ export default async function LenderContactRequestsPage({
 
         <h1 className="mt-4 text-2xl font-bold text-slate-900">Contact requests</h1>
 
-        {/* Weekly usage */}
+        {/* Daily usage */}
         <div className="mt-4 inline-flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-sm text-slate-600">
           <Icon name="spark" className="h-4 w-4 text-verified-700" />
           <span className="font-medium text-slate-900">
-            {approvedThisWeek} / {LENDER_FREE_CONTACTS_PER_WEEK}
+            {sentToday} / {DAILY_FREE_CONTACTS_PER_SIDE}
           </span>
-          approved contacts used this week
+          new contacts used today
         </div>
 
         {searchParams?.message && (

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/layout/Container";
-import { Icon } from "@/components/ui";
+import { Icon, FlashModal } from "@/components/ui";
 import { PublicProductCard, type ProductCardData } from "@/components/cards";
 import { DEMO_PRODUCTS } from "@/lib/demo-data";
 import { createClient } from "@/lib/supabase-server";
@@ -60,6 +60,9 @@ export default async function LoanProductsPage({
 
   return (
     <>
+      {/* Flash popup for request-flow messages (e.g. the daily contact limit). */}
+      <FlashModal message={searchParams?.message} error={searchParams?.error} />
+
       <section className="border-b border-slate-200 bg-gradient-to-b from-brand-50 to-white">
         <Container className="py-10 sm:py-12">
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
@@ -73,17 +76,6 @@ export default async function LoanProductsPage({
       </section>
 
       <Container className="py-8">
-        {searchParams?.message && (
-          <div className="mb-6 rounded-xl border border-verified-500/30 bg-verified-100/50 px-3 py-2 text-sm text-verified-700">
-            {searchParams.message}
-          </div>
-        )}
-        {searchParams?.error && (
-          <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-            {searchParams.error}
-          </div>
-        )}
-
         {products.length > 0 && (
           <div className="grid gap-5 sm:grid-cols-2">
             {products.map((p) => (

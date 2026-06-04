@@ -335,8 +335,26 @@ export const LICENSED_LENDER_TYPES: LenderType[] = [
 ];
 
 /* ── Launch-phase business rules ─────────────────────────────── */
+// DORMANT: the old weekly approved-contacts cap. Superseded by the daily cap
+// below (migration 0009). Kept so existing imports don't break.
 export const LENDER_FREE_CONTACTS_PER_WEEK = 5;
 export const MESSAGE_RETENTION_MONTHS = 6;
+
+/**
+ * Daily anti-spam contact cap. Each account (borrower OR lender) can START up
+ * to this many NEW contact requests per calendar day (America/Toronto).
+ * Approving a request, or messaging inside a conversation that is already open,
+ * never counts. Mirrors `platform_settings.daily_contact_limit` — change both
+ * together. Enforced in the contact-request RPCs (migration 0009).
+ */
+export const DAILY_FREE_CONTACTS_PER_SIDE = 5;
+
+/** Friendly, anti-spam wording shown when the daily contact cap is reached. */
+export const DAILY_CONTACT_LIMIT_MESSAGE =
+  "You've reached today's limit of " + DAILY_FREE_CONTACTS_PER_SIDE +
+  " new contact requests. To keep the marketplace free of spam, each account can " +
+  "start up to " + DAILY_FREE_CONTACTS_PER_SIDE + " new contacts per day. The limit " +
+  "resets tomorrow — any conversations you've already opened stay open.";
 
 /**
  * TEMPORARY pre-launch flag. When true, the public boards (Borrower requests &
@@ -345,6 +363,15 @@ export const MESSAGE_RETENTION_MONTHS = 6;
  * the real behaviour (demo cards show only when a board is otherwise empty).
  */
 export const SHOW_DEMO_CARDS_ALWAYS = true;
+
+/**
+ * TEMPORARY: hide every public pricing/credits surface — the nav tab, the footer
+ * link, the /pricing and /credits pages (they 404 while hidden), and the
+ * pricing/credits wording on the marketing pages. The marketplace stays free for
+ * both sides while this is false (the dormant payment/credits gates in
+ * platform_settings remain off). Flip back to true to restore pricing.
+ */
+export const PRICING_VISIBLE = false;
 /**
  * Borrower→lender listing-contact fee (the dormant Stage 13 "pay $5 to open
  * messaging" flow). Still wired in code (payment-actions.ts) but gated off by

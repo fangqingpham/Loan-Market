@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Container } from "./Container";
 import { Button } from "@/components/ui/Button";
 import { LogoutButton } from "@/components/auth/LogoutButton";
-import { APP_NAME, ROUTES } from "@/lib/constants";
+import { APP_NAME, ROUTES, PRICING_VISIBLE } from "@/lib/constants";
 import { cn } from "@/lib/helpers";
 
 const navLinks = [
@@ -14,7 +14,8 @@ const navLinks = [
   { href: ROUTES.loanProducts, label: "Loan products" },
   { href: ROUTES.lenders, label: "Lenders" },
   { href: ROUTES.safety, label: "Safety" },
-  { href: ROUTES.pricing, label: "Pricing" },
+  // Pricing is hidden while PRICING_VISIBLE is false.
+  ...(PRICING_VISIBLE ? [{ href: ROUTES.pricing, label: "Pricing" }] : []),
 ];
 
 /**
