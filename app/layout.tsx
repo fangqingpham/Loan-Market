@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     template: `%s · ${APP_NAME}`,
   },
   description:
-    "Loan Market connects borrowers with verified lenders. Borrower contact details stay private until you approve a verified lender's request.",
+    "Loan Market connects borrowers with trusted lenders. Borrower contact details stay private until you approve a trusted lender's request.",
 };
 
 export default async function RootLayout({

@@ -13,7 +13,7 @@ import { createClient } from "@/lib/supabase-server";
 import { createAdminClient } from "@/lib/supabase-admin";
 import { dashboardPathFor } from "@/lib/auth";
 import { checkLenderLicence } from "@/lib/licence-check";
-import { PRIVATE_LENDERS_ENABLED, LICENSED_LENDER_TYPES } from "@/lib/constants";
+import { PRIVATE_LENDERS_ENABLED, LICENSED_LENDER_TYPES, LICENCE_REQUIRED_LENDER_TYPES } from "@/lib/constants";
 import type { UserRole, Province, LenderType } from "@/types/database";
 
 const LOGIN = "/login";
@@ -129,9 +129,13 @@ export async function signupLenderAction(formData: FormData): Promise<void> {
   if (!PRIVATE_LENDERS_ENABLED && !LICENSED_LENDER_TYPES.includes(lenderType as LenderType)) {
     fail(SIGNUP_LENDER, "Registration is currently open to licensed lenders only.");
   }
-  // A licence/registration number is required for all (licensed) lenders.
-  if (!licenceNumber) {
-    fail(SIGNUP_LENDER, "A licence or registration number is required.");
+  // A licence number is required only for mortgage brokers and agents — the
+  // only types that carry a personal/firm licence. Banks, credit unions, and
+  // financing companies are authorized/registered instead, so they submit no
+  // licence number. Mirrors the show/hide logic in the signup form.
+  const requiresLicence = LICENCE_REQUIRED_LENDER_TYPES.includes(lenderType as LenderType);
+  if (requiresLicence && !licenceNumber) {
+    fail(SIGNUP_LENDER, "A licence number is required for mortgage brokers and agents.");
   }
   if (agree !== "on") fail(SIGNUP_LENDER, "You must agree to the Terms, Privacy Policy, and Disclaimer.");
   if (agreeRules !== "on") fail(SIGNUP_LENDER, "You must agree to the platform rules.");

@@ -169,13 +169,13 @@ export default async function LoanRequestsPage({
               <p className="mt-1 text-base text-slate-600">
                 Browse active loan requests from borrowers across Canada.
                 {!isVerified &&
-                  " Sign in as a lender to see expanded details."}
+                  " Sign in as a lender/broker to see expanded details."}
               </p>
             </div>
             {isVerified && (
               <Badge tone="verified" className="mt-1">
                 <Icon name="badge-check" className="h-3.5 w-3.5" />
-                Lender view
+                Lender/Broker view
               </Badge>
             )}
           </div>
@@ -198,10 +198,10 @@ export default async function LoanRequestsPage({
                 </span>
                 <div>
                   <p className="text-sm font-medium text-slate-900">
-                    Sign in as a lender to view more details and request contact.
+                    Sign in as a lender/broker to view more details and request contact.
                   </p>
                   <p className="mt-0.5 text-xs text-slate-600">
-                    Signed-in lenders see credit score range, income range, employment
+                    Signed-in lenders/brokers see credit score range, income range, employment
                     type, interest expectations, and borrower notes.
                   </p>
                 </div>
@@ -213,7 +213,7 @@ export default async function LoanRequestsPage({
                   </Button>
                 </Link>
                 <Link href={ROUTES.signupLender}>
-                  <Button size="sm">Join as a lender</Button>
+                  <Button size="sm">Join as a lender/broker</Button>
                 </Link>
               </div>
             </CardContent>

@@ -51,7 +51,7 @@ export function PublicProductCard({
   demo?: boolean;
 }) {
   const company =
-    product.business_name || (product.is_private_lender ? "Private lender" : "Lender");
+    product.business_name || (product.is_private_lender ? "Private lender" : "Lender/Broker");
 
   return (
     <Card className="flex h-full flex-col">

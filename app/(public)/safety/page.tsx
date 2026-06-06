@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { Card, CardContent, CardTitle, Badge, Icon, type IconName } from "@/components/ui";
 import { PageIntro } from "@/components/marketing/PageIntro";
 import { CTASection } from "@/components/marketing/CTASection";
 import { Section } from "@/components/marketing/Section";
 import { APP_NAME, PLATFORM_DISCLAIMER, SAFETY_WARNINGS } from "@/lib/constants";
+import {
+  VERIFY_BY_TYPE,
+  NATIONAL_VERIFICATION_LINKS,
+  PROVINCE_VERIFICATION_LINKS,
+} from "@/lib/verification-links";
 
 export const metadata: Metadata = {
   title: "Safety",
@@ -45,6 +51,25 @@ const commitments: { icon: IconName; title: string; body: string }[] = [
 ];
 
 const tips: string[] = SAFETY_WARNINGS;
+
+/** External link to an official regulator / registry (opens in a new tab). */
+function ExtLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="font-medium text-brand-700 hover:underline"
+    >
+      {children}
+    </a>
+  );
+}
+
+/** Placeholder for a province/territory with no link in a given category. */
+function Dash() {
+  return <span className="text-slate-400">—</span>;
+}
 
 export default function SafetyPage() {
   return (
@@ -135,6 +160,158 @@ export default function SafetyPage() {
               </ul>
             </CardContent>
           </Card>
+        </div>
+      </Section>
+
+      {/* How to verify a lender / broker / financing company */}
+      <Section
+        title="Verifying a lender, broker, or financing company"
+        subtitle="Banks, credit unions, and financing companies aren't all licensed the same way. Here's how to check each one in Canada."
+      >
+        <div className="mx-auto max-w-4xl space-y-8">
+          <p className="text-sm leading-relaxed text-slate-600">
+            Only mortgage brokers and agents hold a personal or firm &ldquo;licence&rdquo; in the
+            broker sense. Banks and credit unions aren&apos;t licensed that way &mdash; they&apos;re
+            chartered, authorized, and supervised by a regulator (federal for banks, provincial for
+            most credit unions). A financing company that lends its own money usually has no
+            financial licence at all &mdash; it&apos;s simply an incorporated company &mdash; unless
+            it offers high-cost credit, payday loans, or money services, which do require a
+            provincial licence or federal registration.
+          </p>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {VERIFY_BY_TYPE.map((v) => (
+              <Card key={v.type}>
+                <CardContent className="flex gap-4">
+                  <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                    <Icon name={v.icon} className="h-5 w-5" />
+                  </span>
+                  <div className="space-y-1">
+                    <CardTitle className="text-base">{v.type}</CardTitle>
+                    <p className="text-sm text-slate-600">{v.how}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
+            <div className="flex items-start gap-3">
+              <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-amber-700">
+                <Icon name="scale" className="h-5 w-5" />
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-amber-900">
+                  Registration is not an endorsement
+                </p>
+                <p className="mt-1 text-sm leading-relaxed text-amber-900">
+                  Appearing in a corporate registry, or being registered with FINTRAC, only means
+                  the entity exists or met a filing requirement &mdash; it does not mean a regulator
+                  has vetted or approved them. FINTRAC states plainly that registration &ldquo;does
+                  not indicate that FINTRAC endorses or licenses the business.&rdquo; {APP_NAME}{" "}
+                  does not verify, vet, or endorse lenders &mdash; always confirm credentials
+                  yourself with the regulator before dealing with anyone.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* Useful links to verify a lender / financing company */}
+      <Section
+        tinted
+        title="Useful links to check a lender or financing company"
+        subtitle="Official regulator and government registries. Start with the national links, then use the table for the province where the lender operates."
+      >
+        <div className="space-y-10">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {NATIONAL_VERIFICATION_LINKS.map((link) => (
+              <Card key={link.title} interactive className="group">
+                <CardContent className="flex items-start gap-4">
+                  <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-verified-100 text-verified-700 transition-all duration-300 group-hover:bg-verified-600 group-hover:text-white">
+                    <Icon name={link.icon} className="h-5 w-5" />
+                  </span>
+                  <div className="space-y-1">
+                    <CardTitle className="text-base">
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-slate-900 hover:text-brand-700 hover:underline"
+                      >
+                        {link.title}
+                        <Icon name="arrow-right" className="ml-1 inline h-3.5 w-3.5 align-[-1px]" />
+                      </a>
+                    </CardTitle>
+                    <p className="text-sm text-slate-600">{link.description}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div>
+            <h3 className="text-base font-semibold text-slate-900">By province or territory</h3>
+            <p className="mt-1 text-sm text-slate-600">
+              Credit unions and most consumer-lender licences are provincial, so check the province
+              where the lender operates. Scroll the table sideways on a small screen.
+            </p>
+            <div className="mt-4 overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+              <table className="w-full min-w-[860px] border-collapse text-sm">
+                <thead>
+                  <tr className="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <th className="px-4 py-3">Province / territory</th>
+                    <th className="px-4 py-3">Credit union</th>
+                    <th className="px-4 py-3">Corporate registry</th>
+                    <th className="px-4 py-3">Consumer / high-cost lender</th>
+                    <th className="px-4 py-3">Mortgage broker</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {PROVINCE_VERIFICATION_LINKS.map((p) => (
+                    <tr key={p.name} className="border-t border-slate-100 align-top">
+                      <td className="px-4 py-3 font-medium text-slate-900">{p.name}</td>
+                      <td className="px-4 py-3">
+                        {p.creditUnion ? (
+                          <ExtLink href={p.creditUnion.href}>{p.creditUnion.label}</ExtLink>
+                        ) : (
+                          <Dash />
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        {p.corporate ? (
+                          <ExtLink href={p.corporate.href}>{p.corporate.label}</ExtLink>
+                        ) : (
+                          <Dash />
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        {p.lenderLicence ? (
+                          <ExtLink href={p.lenderLicence.href}>{p.lenderLicence.label}</ExtLink>
+                        ) : (
+                          <Dash />
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        {p.mortgage ? (
+                          <ExtLink href={p.mortgage.href}>{p.mortgage.label}</ExtLink>
+                        ) : (
+                          <Dash />
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-3 text-xs text-slate-500">
+              Links point to official regulators and government registries and were last checked in
+              June 2026. If a link has moved, search the organisation name shown. For the
+              territories (NT, NU, YT) there is no provincial credit-union or high-cost-credit
+              framework &mdash; any credit union there would be federally regulated by OSFI.
+            </p>
+          </div>
         </div>
       </Section>
 

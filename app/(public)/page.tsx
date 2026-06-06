@@ -22,8 +22,8 @@ const heroCards: { icon: IconName; title: string; body: string }[] = [
   },
   {
     icon: "badge-check",
-    title: "Licensed lenders",
-    body: "Lenders display a licence number you can confirm with the regulator yourself.",
+    title: "Trusted lenders/brokers",
+    body: "Lenders and brokers display a licence number you can confirm with the regulator yourself.",
   },
   {
     icon: "shield",
@@ -40,8 +40,8 @@ const steps: { icon: IconName; title: string; body: string }[] = [
   },
   {
     icon: "badge-check",
-    title: "Licensed lenders respond",
-    body: "Lenders who provide a licence number and agree to the platform rules can see your request and ask to connect.",
+    title: "Trusted lenders/brokers respond",
+    body: "Lenders and brokers who provide a licence number and agree to the platform rules can see your request and ask to connect.",
   },
   {
     icon: "handshake",
@@ -54,12 +54,12 @@ const borrowerPoints: { icon: IconName; title: string; body: string }[] = [
   {
     icon: "tag",
     title: "Free to post",
-    body: "Posting a loan request costs nothing. There are no fees for borrowers to be matched with licensed lenders.",
+    body: "Posting a loan request costs nothing. There are no fees for borrowers to be matched with trusted lenders/brokers.",
   },
   {
     icon: "eye-off",
     title: "Your contact info is hidden",
-    body: "Your phone and email stay private until you choose to approve a lender's request.",
+    body: "Your phone and email stay private until you choose to approve a lender/broker's request.",
   },
   {
     icon: "no-document",
@@ -99,8 +99,8 @@ const safetyPoints: { icon: IconName; title: string; body: string }[] = [
   },
   {
     icon: "badge-check",
-    title: "Licensed lenders only",
-    body: "Lenders provide a licence number you can confirm with the regulator yourself, and agree to the platform rules.",
+    title: "Trusted lenders/brokers only",
+    body: "Lenders and brokers provide a licence number you can confirm with the regulator yourself, and agree to the platform rules.",
   },
 ];
 
@@ -120,7 +120,7 @@ export default function HomePage() {
           <div className="max-w-2xl">
             <span className="inline-flex items-center gap-2 text-sm font-medium uppercase tracking-widest text-accent-400 animate-fade-up">
               <span className="h-px w-8 bg-accent-400" />
-              Privacy-first lending marketplace
+              A Marketplace Where Borrowers Find Trusted Lenders
             </span>
             <h1 className="mt-5 text-4xl font-extrabold leading-[1.05] tracking-tight text-white animate-fade-up anim-delay-100 sm:text-6xl">
               Post your loan request.
@@ -128,7 +128,7 @@ export default function HomePage() {
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-300 animate-fade-up anim-delay-200">
               {APP_NAME} is a privacy-first place to share what you need and hear from
-              licensed lenders. It&apos;s free for borrowers, and you decide who can contact you.
+              trusted lenders/brokers. It&apos;s free for borrowers, and you decide who can contact you.
             </p>
             <div className="mt-9 flex flex-col gap-3 animate-fade-up anim-delay-300 sm:flex-row">
               <Link href={ROUTES.signupBorrower}>
@@ -142,7 +142,7 @@ export default function HomePage() {
                   size="lg"
                   className="w-full rounded-full border border-white/25 bg-white/5 text-white hover:bg-white/10 sm:w-auto"
                 >
-                  Join as a Licensed Lender
+                  Join as a Lender/Broker
                 </Button>
               </Link>
             </div>
@@ -268,17 +268,17 @@ export default function HomePage() {
             ))}
           </div>
           <div className="lg:order-1">
-            <Badge tone="verified">For lenders</Badge>
+            <Badge tone="verified">For lenders/brokers</Badge>
             <h2 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
               Reach borrowers who want to hear from you
             </h2>
             <p className="mt-3 text-base text-slate-600">
               List your products, browse requests in the categories you serve, and connect only
-              with borrowers who approve your request. It&apos;s free for lenders during launch.
+              with borrowers who approve your request. It&apos;s free for lenders/brokers during launch.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href={ROUTES.lenders}>
-                <Button variant="outline">Learn more for lenders</Button>
+                <Button variant="outline">Learn more for lenders/brokers</Button>
               </Link>
               {PRICING_VISIBLE && (
                 <Link href={ROUTES.pricing}>
@@ -326,7 +326,7 @@ export default function HomePage() {
       <Section
         eyebrow="Loan categories"
         title="Requests across common loan types"
-        subtitle="Borrowers post requests in the categories below, and licensed lenders connect where they're a fit."
+        subtitle="Borrowers post requests in the categories below, and trusted lenders/brokers connect where they're a fit."
         centered
       >
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">

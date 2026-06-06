@@ -13,7 +13,15 @@ export const APP_TAGLINE = "A privacy-first loan marketplace.";
 
 /** One-line marketing promise used across the public site. */
 export const APP_PROMISE =
-  "Post your loan request for free. Connect with licensed lenders only.";
+  "Post your loan request for free. Connect with trusted lenders/brokers only.";
+
+/** Brand slogan shown next to the logo in the navbar. */
+export const APP_SLOGAN = "A Marketplace Where Borrowers Find Trusted Lenders/Brokers";
+
+/** Legal operating entity and primary contact (used in legal pages, contact, footer). */
+export const LEGAL_ENTITY = "Nexus Milestone Inc.";
+export const SUPPORT_EMAIL = "seed2success.financial@outlook.com";
+export const GOVERNING_LAW_REGION = "Province of Ontario, Canada";
 
 export const USER_ROLES: Record<Uppercase<UserRole>, UserRole> = {
   BORROWER: "borrower",
@@ -188,7 +196,7 @@ export const PRODUCT_POSTING_NOTE =
  */
 export const REPORT_REASONS: { value: string; label: string }[] = [
   { value: "spam", label: "Spam" },
-  { value: "scam_fake_lender", label: "Scam / fake lender" },
+  { value: "scam_fake_lender", label: "Scam / fake lender/broker" },
   { value: "upfront_fee_request", label: "Upfront fee request" },
   { value: "misleading_loan_claim", label: "Misleading loan claim" },
   { value: "harassment", label: "Harassment" },
@@ -218,14 +226,14 @@ export const SAFETY_WARNINGS: string[] = [
   "No document uploads. The platform does not accept financial documents or ID, and you should never try to send them.",
   "Do not share your SIN, bank login, passwords, tax documents, pay stubs, bank statements, or ID documents through the platform.",
   "Do not pay upfront fees to receive a loan. Be cautious of anyone who asks for one, and report it.",
-  "You are responsible for your own due diligence on any borrower, lender, offer, or agreement.",
-  "Lenders are responsible for their own licensing, advertising, disclosure, and legal compliance.",
+  "You are responsible for your own due diligence on any borrower, lender/broker, offer, or agreement.",
+  "Lenders and brokers are responsible for their own licensing, advertising, disclosure, and legal compliance.",
   "Loan Market may suspend or remove users or listings for safety reasons.",
 ];
 
 /** Lender's own-compliance responsibility statement (used in lender-facing surfaces). */
 export const LENDER_RESPONSIBILITY_STATEMENT =
-  "As a lender, you are solely responsible for your own licensing, advertising, " +
+  "As a lender or broker, you are solely responsible for your own licensing, advertising, " +
   "disclosure, interest-rate compliance, and all other legal obligations. Loan Market " +
   "does not verify, endorse, or arrange loans, and is not a party to any loan.";
 
@@ -239,11 +247,11 @@ export const LENDER_RESPONSIBILITY_STATEMENT =
  */
 
 /** Short factual label used in place of "Verified lender". */
-export const LICENSED_LENDER_LABEL = "Licensed lender";
+export const LICENSED_LENDER_LABEL = "Trusted lender/broker";
 
 /** Caption shown next to a displayed licence number. */
 export const LICENCE_SELF_REPORTED_NOTE =
-  "Licence number provided by the lender. Loan Market does not confirm it — check it " +
+  "Licence number provided by the lender/broker. Loan Market does not confirm it — check it " +
   "yourself with the regulator before dealing with anyone.";
 
 /** Call-to-action text for the outbound regulator-lookup link. */
@@ -314,9 +322,9 @@ export const OTHER_PROVINCE_REGULATORS: { name: string; url: string }[] = [
  * the rules; users confirm licences themselves.
  */
 export const LENDER_INTAKE_NOTE =
-  "Loan Market does not verify, vet, or endorse lenders. Lenders agree to the " +
+  "Loan Market does not verify, vet, or endorse lenders/brokers. Lenders and brokers agree to the " +
   "platform rules and provide a licence number, which is shown as self-reported. " +
-  "Always confirm a lender's licence with the regulator yourself.";
+  "Always confirm a lender/broker's licence with the regulator yourself.";
 
 /* ── Launch gating flags ──────────────────────────────
  * Early stage: licensed lenders only. Private-lender registration stays CLOSED
@@ -332,6 +340,18 @@ export const LICENSED_LENDER_TYPES: LenderType[] = [
   "financing_company",
   "bank",
   "credit_union",
+];
+
+/**
+ * Lender/Broker types that must supply a licence number at signup. Only mortgage
+ * brokers and agents carry a personal/firm licence; banks, credit unions and
+ * financing companies are authorized or registered instead and provide no
+ * licence number here. Drives both the signup form (show/hide the field) and
+ * the signup action (whether the field is required).
+ */
+export const LICENCE_REQUIRED_LENDER_TYPES: LenderType[] = [
+  "mortgage_broker",
+  "mortgage_agent",
 ];
 
 /* ── Launch-phase business rules ─────────────────────────────── */
@@ -498,6 +518,7 @@ export const MARKETING_LOAN_CATEGORIES: string[] = [
 export const ROUTES = {
   home: "/",
   about: "/about",
+  contact: "/contact",
   // Public marketing pages
   howItWorks: "/how-it-works",
   borrowers: "/borrowers",

@@ -139,7 +139,7 @@ export function PublicLoanRequestCard({
           <div className="rounded-xl border border-verified-500/20 bg-verified-100/30 p-3">
             <div className="flex items-center gap-1.5 text-sm font-medium text-verified-700">
               <Icon name="badge-check" className="h-3.5 w-3.5" />
-              Lender view
+              Lender/Broker view
             </div>
             <div className="mt-2 flex flex-wrap gap-2">
               <Meta label="Credit" value={extra.credit_score_range} />

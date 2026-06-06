@@ -8,7 +8,7 @@ import { APP_NAME } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "FAQ",
   description:
-    "Frequently asked questions about how Loan Market works, privacy, and lender licences.",
+    "Frequently asked questions about how Loan Market works, privacy, and lender/broker licences.",
 };
 
 type QA = { q: string; a: string };
@@ -20,15 +20,15 @@ const groups: Group[] = [
     items: [
       {
         q: "What is Loan Market?",
-        a: `${APP_NAME} is a privacy-first introduction platform. Borrowers post loan requests for free and connect with licensed lenders only. We connect people — we don't lend, broker, or arrange the loan ourselves, and we don't verify or endorse anyone.`,
+        a: `${APP_NAME} is a privacy-first introduction platform. Borrowers post loan requests for free and connect with trusted lenders/brokers only. We connect people — we don't lend, broker, or arrange the loan ourselves, and we don't verify or endorse anyone.`,
       },
       {
         q: "How do I post a loan request?",
         a: "Create a borrower account, choose your loan category, add an amount range and a short description, and post. It's free and takes a few minutes.",
       },
       {
-        q: "How do I become a lender?",
-        a: "Create a lender account, agree to the platform rules, and provide your licence number. Your licence number is shown on your listings as self-reported so borrowers can confirm it with the regulator themselves.",
+        q: "How do I become a lender/broker?",
+        a: "Create a lender/broker account, agree to the platform rules, and provide your licence number where applicable. Mortgage brokers and agents show a licence number on their listings as self-reported so borrowers can confirm it with the regulator themselves.",
       },
     ],
   },
@@ -36,8 +36,8 @@ const groups: Group[] = [
     heading: "Privacy & safety",
     items: [
       {
-        q: "Will lenders see my contact details?",
-        a: "No. Your phone and email stay hidden until you approve a specific lender's contact request.",
+        q: "Will lenders or brokers see my contact details?",
+        a: "No. Your phone and email stay hidden until you approve a specific lender/broker's contact request.",
       },
       {
         q: "Do I have to upload documents?",
@@ -56,12 +56,12 @@ const groups: Group[] = [
         a: "No. Loan Market is a marketplace and contact-introduction platform. We do not lend money, broker loans, arrange mortgages, provide financial advice, verify borrower information, guarantee approval, negotiate terms, underwrite loans, or participate in loan transactions. Always do your own due diligence before agreeing to anything.",
       },
       {
-        q: "Who is responsible for a lender's licensing and compliance?",
-        a: "Lenders are. Each lender is solely responsible for their own licensing, advertising, disclosure, and legal compliance. Loan Market does not verify or endorse lenders.",
+        q: "Who is responsible for a lender/broker's licensing and compliance?",
+        a: "Lenders and brokers are. Each lender or broker is solely responsible for their own licensing, advertising, disclosure, and legal compliance. Loan Market does not verify or endorse lenders/brokers.",
       },
       {
-        q: "Does Loan Market check lender licences?",
-        a: "No. Lenders provide their own licence number, which we display as self-reported. We do not confirm it. Each lender listing links to the regulator's public register so you can confirm the licence yourself before dealing with anyone.",
+        q: "Does Loan Market check lender/broker licences?",
+        a: "No. Lenders and brokers provide their own licence number, which we display as self-reported. We do not confirm it. Each listing links to the regulator's public register so you can confirm the licence yourself before dealing with anyone.",
       },
     ],
   },
@@ -70,7 +70,7 @@ const groups: Group[] = [
     items: [
       {
         q: "Is it free to use?",
-        a: "Yes. During launch, Loan Market is free for both borrowers and lenders — there's no charge to post a request, list a product, or connect when a request is approved.",
+        a: "Yes. During launch, Loan Market is free for both borrowers and lenders/brokers — there's no charge to post a request, list a product, or connect when a request is approved.",
       },
       {
         q: "Is there a limit on how many people I can contact?",
@@ -86,7 +86,7 @@ export default function FAQPage() {
       <PageIntro
         eyebrow="FAQ"
         title="Frequently asked questions"
-        subtitle="Quick answers about how Loan Market works, privacy, and lender licences."
+        subtitle="Quick answers about how Loan Market works, privacy, and lender/broker licences."
       />
 
       <section className="py-16 sm:py-20">

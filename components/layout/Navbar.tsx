@@ -1,18 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { Container } from "./Container";
 import { Button } from "@/components/ui/Button";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 import { APP_NAME, ROUTES, PRICING_VISIBLE } from "@/lib/constants";
 import { cn } from "@/lib/helpers";
+import logo from "@/app/(public)/photo/LM.png";
 
 const navLinks = [
   { href: ROUTES.howItWorks, label: "How it works" },
   { href: ROUTES.loanRequests, label: "Borrower requests" },
   { href: ROUTES.loanProducts, label: "Loan products" },
-  { href: ROUTES.lenders, label: "Lenders" },
+  { href: ROUTES.lenders, label: "Lenders/Brokers" },
   { href: ROUTES.safety, label: "Safety" },
   // Pricing is hidden while PRICING_VISIBLE is false.
   ...(PRICING_VISIBLE ? [{ href: ROUTES.pricing, label: "Pricing" }] : []),
@@ -30,11 +32,16 @@ export function Navbar({ dashboardHref }: { dashboardHref?: string | null }) {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
       <Container className="flex h-16 items-center justify-between gap-4">
-        <Link href={ROUTES.home} className="flex items-center gap-2">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-brand-600 text-sm font-bold text-white">
-            LM
+        <Link href={ROUTES.home} className="flex items-center gap-2.5">
+          <Image
+            src={logo}
+            alt={APP_NAME + " logo"}
+            priority
+            className="h-11 w-11 rounded-lg object-contain"
+          />
+          <span className="text-lg font-bold uppercase tracking-wide text-slate-900">
+            {APP_NAME}
           </span>
-          <span className="text-base font-semibold text-slate-900">{APP_NAME}</span>
         </Link>
 
         {/* Desktop nav */}

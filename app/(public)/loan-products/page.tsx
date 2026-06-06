@@ -11,7 +11,7 @@ import type { ContactRequestStatus } from "@/types/database";
 export const metadata: Metadata = {
   title: "Loan products",
   description:
-    "Browse loan products from licensed lenders. Lender contact details stay private — connecting opens an in-platform conversation only.",
+    "Browse loan products from trusted lenders/brokers. Lender/broker contact details stay private — connecting opens an in-platform conversation only.",
 };
 
 export default async function LoanProductsPage({
@@ -69,7 +69,7 @@ export default async function LoanProductsPage({
             Loan products
           </h1>
           <p className="mt-1 text-base text-slate-600">
-            Products and services from licensed lenders across Canada. Lender contact
+            Products and services from trusted lenders/brokers across Canada. Lender/broker contact
             details stay private — you connect through an approved in-platform conversation.
           </p>
         </Container>
@@ -94,8 +94,8 @@ export default async function LoanProductsPage({
           <>
             <div className={`${products.length > 0 ? "mt-6" : ""} mb-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600`}>
               {products.length > 0
-                ? "Example products shown below to illustrate the board while we grow. Real lender products appear above."
-                : "These are example products that show how the board looks. Real lender products will appear here as licensed lenders post them."}
+                ? "Example products shown below to illustrate the board while we grow. Real lender/broker products appear above."
+                : "These are example products that show how the board looks. Real lender/broker products will appear here as trusted lenders/brokers post them."}
             </div>
             <div className="grid gap-5 sm:grid-cols-2">
               {DEMO_PRODUCTS.map((p) => (
@@ -110,7 +110,7 @@ export default async function LoanProductsPage({
             <Icon name="shield" className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
             <p className="text-xs text-slate-500">
               {APP_NAME} is an introduction platform. We do not lend, broker, approve,
-              underwrite, recommend, or arrange loans. Lender phone, email, and website are
+              underwrite, recommend, or arrange loans. Lender/broker phone, email, and website are
               never displayed. Always do your own due diligence.
             </p>
           </div>

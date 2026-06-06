@@ -9,19 +9,19 @@ import { ROUTES } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "For borrowers",
   description:
-    "Post your loan request for free, keep your contact details private, and hear from licensed lenders only. No document uploads.",
+    "Post your loan request for free, keep your contact details private, and hear from trusted lenders/brokers only. No document uploads.",
 };
 
 const benefits: { icon: IconName; title: string; body: string }[] = [
   {
     icon: "tag",
     title: "Always free to post",
-    body: "Borrowers never pay to post a request or to be connected with licensed lenders.",
+    body: "Borrowers never pay to post a request or to be connected with trusted lenders/brokers.",
   },
   {
     icon: "eye-off",
     title: "Your contact info is hidden",
-    body: "Your phone and email stay private. Lenders can't see them unless you approve their request.",
+    body: "Your phone and email stay private. Lenders and brokers can't see them unless you approve their request.",
   },
   {
     icon: "no-document",
@@ -30,8 +30,8 @@ const benefits: { icon: IconName; title: string; body: string }[] = [
   },
   {
     icon: "badge-check",
-    title: "Licensed lenders only",
-    body: "Lenders provide a licence number you can confirm with the regulator yourself before you deal with anyone.",
+    title: "Trusted lenders/brokers only",
+    body: "Lenders and brokers provide a licence number you can confirm with the regulator yourself before you deal with anyone.",
   },
   {
     icon: "handshake",
@@ -41,18 +41,18 @@ const benefits: { icon: IconName; title: string; body: string }[] = [
   {
     icon: "search",
     title: "Compare on your terms",
-    body: "Hear from multiple licensed lenders and do your own research before deciding anything.",
+    body: "Hear from multiple trusted lenders/brokers and do your own research before deciding anything.",
   },
 ];
 
 const faqs: { q: string; a: string }[] = [
   {
     q: "Does it cost anything to post?",
-    a: "No. Posting a loan request and being connected with licensed lenders is free for borrowers.",
+    a: "No. Posting a loan request and being connected with trusted lenders/brokers is free for borrowers.",
   },
   {
-    q: "Will lenders see my phone number or email?",
-    a: "No. Your contact details stay hidden until you approve a specific lender's request.",
+    q: "Will lenders or brokers see my phone number or email?",
+    a: "No. Your contact details stay hidden until you approve a specific lender/broker's request.",
   },
   {
     q: "Does Loan Market lend the money?",
@@ -66,7 +66,7 @@ export default function BorrowersPage() {
       <PageIntro
         eyebrow="For borrowers"
         title="Post your loan request for free"
-        subtitle="Share what you need privately and hear from licensed lenders only. You stay anonymous until you choose to approve a connection."
+        subtitle="Share what you need privately and hear from trusted lenders/brokers only. You stay anonymous until you choose to approve a connection."
       />
 
       <Section title="Why borrowers use Loan Market">

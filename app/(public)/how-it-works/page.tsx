@@ -10,7 +10,7 @@ import { APP_NAME, ROUTES } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "How it works",
   description:
-    "A privacy-first, consent-based flow: post a request for free, hear from licensed lenders only, and approve every connection.",
+    "A privacy-first, consent-based flow: post a request for free, hear from trusted lenders/brokers only, and approve every connection.",
 };
 
 const borrowerSteps: { icon: IconName; title: string; body: string }[] = [
@@ -22,12 +22,12 @@ const borrowerSteps: { icon: IconName; title: string; body: string }[] = [
   {
     icon: "eye-off",
     title: "Stay private",
-    body: "Your name, phone, and email are never shown publicly. Lenders see only the details you choose to share in the request.",
+    body: "Your name, phone, and email are never shown publicly. Lenders and brokers see only the details you choose to share in the request.",
   },
   {
     icon: "badge-check",
-    title: "Hear from licensed lenders",
-    body: "Licensed lenders who serve your category and region can send you a contact request.",
+    title: "Hear from trusted lenders/brokers",
+    body: "Trusted lenders/brokers who serve your category and region can send you a contact request.",
   },
   {
     icon: "handshake",
@@ -39,8 +39,8 @@ const borrowerSteps: { icon: IconName; title: string; body: string }[] = [
 const lenderSteps: { icon: IconName; title: string; body: string }[] = [
   {
     icon: "user",
-    title: "Sign up as a lender",
-    body: "Create a lender account and provide your business details and licence number.",
+    title: "Sign up as a lender/broker",
+    body: "Create a lender/broker account and provide your business details and licence number where applicable.",
   },
   {
     icon: "shield",
@@ -102,11 +102,11 @@ export default function HowItWorksPage() {
         </div>
       </Section>
 
-      <Section tinted title="For lenders" subtitle="List your products, then connect with borrowers who approve your request.">
+      <Section tinted title="For lenders/brokers" subtitle="List your products, then connect with borrowers who approve your request.">
         <StepList steps={lenderSteps} />
         <div className="mt-6">
           <Link href={ROUTES.signupLender}>
-            <Button variant="outline">Join as a Licensed Lender</Button>
+            <Button variant="outline">Join as a Lender/Broker</Button>
           </Link>
         </div>
       </Section>

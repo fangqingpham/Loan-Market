@@ -16,7 +16,7 @@ interface CTASectionProps {
  */
 export function CTASection({
   title = "Ready to get started?",
-  subtitle = "Post your loan request for free, or join as a licensed lender. You stay in control of who can contact you.",
+  subtitle = "Post your loan request for free, or join as a lender/broker. You stay in control of who can contact you.",
 }: CTASectionProps) {
   return (
     <section className="relative overflow-hidden bg-ink-900">
@@ -42,7 +42,7 @@ export function CTASection({
               size="lg"
               className="w-full rounded-full border border-white/25 bg-white/5 text-white hover:bg-white/10 sm:w-auto"
             >
-              Join as a Licensed Lender
+              Join as a Lender/Broker
             </Button>
           </Link>
         </div>

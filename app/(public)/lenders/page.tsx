@@ -11,9 +11,9 @@ import {
 } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "For lenders",
+  title: "For lenders/brokers",
   description:
-    "Licensed lenders: list your products, browse relevant loan requests, and connect only with borrowers who approve your contact request. Free during launch.",
+    "Trusted lenders and brokers: list your products, browse relevant loan requests, and connect only with borrowers who approve your contact request. Free during launch.",
 };
 
 const benefits: { icon: IconName; title: string; body: string }[] = [
@@ -40,7 +40,7 @@ const benefits: { icon: IconName; title: string; body: string }[] = [
 ];
 
 const requirements: string[] = [
-  "Be a licensed lending professional or institution, and provide your licence number.",
+  "Be a trusted lending or brokering professional or institution, and provide your licence number where applicable.",
   "Agree to the platform's conduct and compliance rules.",
   "Agree not to charge borrowers upfront fees to secure a loan.",
   "Keep your business details and licence number accurate and up to date.",
@@ -50,7 +50,7 @@ export default function LendersPage() {
   return (
     <>
       <PageIntro
-        eyebrow="For lenders"
+        eyebrow="For lenders/brokers"
         title="Reach borrowers who want to hear from you"
         subtitle="List your products, browse relevant requests, and connect only with borrowers who approve your contact request."
       />
@@ -66,7 +66,7 @@ export default function LendersPage() {
               <div className="space-y-1">
                 <Badge tone="verified">Free during launch</Badge>
                 <p className="text-sm text-slate-700">
-                  Licensed lenders connect with borrowers{" "}
+                  Trusted lenders/brokers connect with borrowers{" "}
                   <span className="font-semibold text-slate-900">free of charge</span>{" "}
                   during launch — reach out to borrowers who approve your contact request,
                   at no cost.
@@ -82,7 +82,7 @@ export default function LendersPage() {
         </Card>
       </Section>
 
-      <Section title="Why lenders join">
+      <Section title="Why lenders/brokers join">
         <div className="grid gap-6 sm:grid-cols-2">
           {benefits.map((b) => (
             <Card key={b.title} interactive className="group">
@@ -100,7 +100,7 @@ export default function LendersPage() {
         </div>
       </Section>
 
-      <Section tinted title="What we ask of lenders" subtitle="A few baseline commitments keep the marketplace trustworthy for everyone.">
+      <Section tinted title="What we ask of lenders/brokers" subtitle="A few baseline commitments keep the marketplace trustworthy for everyone.">
         <Card className="mx-auto max-w-3xl">
           <CardContent className="space-y-4">
             <ul className="space-y-3">
@@ -121,7 +121,7 @@ export default function LendersPage() {
       </Section>
 
       <CTASection
-        title="Join as a licensed lender"
+        title="Join as a lender/broker"
         subtitle="Sign up, list your products, then connect with borrowers who approve your request."
       />
     </>
