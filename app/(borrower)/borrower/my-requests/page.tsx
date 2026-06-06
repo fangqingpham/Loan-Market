@@ -71,7 +71,7 @@ export default async function MyRequestsPage({
             <div>
               <p className="text-base font-semibold text-slate-900">No requests yet</p>
               <p className="mt-1 text-sm text-slate-600">
-                Post a request for free to start hearing from verified lenders.
+                Post a request for free to start hearing from lenders and brokers.
               </p>
             </div>
             <Link href={ROUTES.borrowerPostRequest}>

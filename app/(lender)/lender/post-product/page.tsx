@@ -22,7 +22,7 @@ export default async function PostProductPage({
   if (!lender || lender.verification_status !== "verified") {
     redirect(
       `${ROUTES.lenderDashboard}?message=${encodeURIComponent(
-        "Only verified lenders can post products."
+        "Your account needs to be active before you can post products."
       )}`
     );
   }
@@ -41,7 +41,7 @@ export default async function PostProductPage({
         <h1 className="mt-4 text-2xl font-bold text-slate-900">Post a product</h1>
         <p className="mt-1 text-sm text-slate-600">
           Describe a loan product or service. It appears on the public product board with
-          your business name and verified badge — never your contact details.
+          your business name — never your contact details.
         </p>
 
         {searchParams?.error && (

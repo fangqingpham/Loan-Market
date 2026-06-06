@@ -74,7 +74,7 @@ export function BorrowerRequestCard({ request }: { request: LoanRequestRow }) {
           <div className="rounded-xl border border-slate-100 bg-slate-50 p-3">
             <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
               <Icon name="badge-check" className="h-3.5 w-3.5 text-verified-700" />
-              Visible to verified lenders only
+              Visible to lenders/brokers only
             </div>
             <div className="mt-2 flex flex-wrap gap-2">
               <Meta label="Credit" value={request.credit_score_range} />

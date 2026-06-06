@@ -4,7 +4,7 @@ import { Container } from "@/components/layout/Container";
 import { Card, CardContent, CardHeader, CardTitle, Button, Badge, Icon, type IconName } from "@/components/ui";
 import { getCurrentProfile, getLenderProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase-server";
-import { ROUTES, DAILY_FREE_CONTACTS_PER_SIDE, PRICING_VISIBLE } from "@/lib/constants";
+import { ROUTES, DAILY_FREE_CONTACTS_PER_SIDE, PRICING_VISIBLE, LICENSED_LENDER_LABEL } from "@/lib/constants";
 import { lenderTypeRequiresLicence } from "@/lib/licence-check";
 import type { LenderVerificationStatus, LicenceVerificationStatus } from "@/types/database";
 
@@ -30,7 +30,7 @@ function statusMessage(status: LenderVerificationStatus): string {
     case "pending_verification":
       return "Your account is being set up. Until it's active, you can't view expanded borrower details or request contact.";
     case "rejected":
-      return "Your account was not approved. Review your details and resubmit — an admin will take another look.";
+      return "Your account was not approved. Review your details and resubmit.";
     case "suspended":
       return "Your account is suspended, so marketplace features are turned off. Please contact support; you can still review your details.";
   }
@@ -110,7 +110,7 @@ export default async function LenderDashboardPage({
               {status === "verified" && <Icon name="badge-check" className="h-3.5 w-3.5" />}
               {STATUS_LABEL[status]}
             </Badge>
-            <Badge tone="neutral">{isPrivate ? "Private lender" : "Licensed lender"}</Badge>
+            <Badge tone="neutral">{isPrivate ? "Private lender" : LICENSED_LENDER_LABEL}</Badge>
           </div>
         </div>
       </div>
@@ -136,11 +136,11 @@ export default async function LenderDashboardPage({
               </span>
               <div>
                 <p className="text-sm font-medium text-red-800">
-                  We were unable to verify your license.
+                  There&apos;s a problem with your licence details.
                 </p>
                 <p className="mt-0.5 text-sm text-red-700">
                   {lender?.licence_check_message ??
-                    "Please update your licence details to be able to post ads or contact borrowers."}
+                    "Please update your licence details to be able to post listings or contact borrowers."}
                 </p>
               </div>
             </div>
@@ -169,13 +169,13 @@ export default async function LenderDashboardPage({
             {isPrivate && (status === "pending_verification" || status === "rejected") && (
               <Link href={ROUTES.lenderVerification}>
                 <Button size="sm">
-                  {status === "rejected" ? "Update & resubmit" : "Complete verification"}
+                  {status === "rejected" ? "Update & resubmit" : "Complete account setup"}
                 </Button>
               </Link>
             )}
             {isPrivate && status === "verified" && (
               <Link href={ROUTES.lenderVerification}>
-                <Button size="sm" variant="outline">Update verification details</Button>
+                <Button size="sm" variant="outline">Update account details</Button>
               </Link>
             )}
             <Link href={ROUTES.lenderSettings}>

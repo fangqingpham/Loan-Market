@@ -48,7 +48,7 @@ export default async function MessagesListPage() {
       .select("id, business_name")
       .in("id", lenderIds);
     for (const l of (data as { id: string; business_name: string | null }[] | null) ?? []) {
-      lenderNameById.set(l.id, l.business_name || "Verified lender");
+      lenderNameById.set(l.id, l.business_name || "Lender/Broker");
     }
   }
   if (conversations.length > 0 && (role === "lender" || role === "admin")) {
@@ -63,10 +63,10 @@ export default async function MessagesListPage() {
   }
 
   function otherParty(c: ConvRow): string {
-    if (role === "borrower") return lenderNameById.get(c.lender_id) ?? "Verified lender";
+    if (role === "borrower") return lenderNameById.get(c.lender_id) ?? "Lender/Broker";
     if (role === "lender") return borrowerNameById.get(c.borrower_id) ?? "Anonymous borrower";
     // admin
-    return `${borrowerNameById.get(c.borrower_id) ?? "Borrower"} ↔ ${lenderNameById.get(c.lender_id) ?? "Lender"}`;
+    return `${borrowerNameById.get(c.borrower_id) ?? "Borrower"} ↔ ${lenderNameById.get(c.lender_id) ?? "Lender/Broker"}`;
   }
 
   const dashHref =
@@ -89,7 +89,7 @@ export default async function MessagesListPage() {
 
         <h1 className="mt-4 text-2xl font-bold text-slate-900">Messages</h1>
         <p className="mt-1 text-sm text-slate-600">
-          Conversations open only after a borrower approves a verified lender&apos;s contact
+          Conversations open only after a borrower approves a lender/broker&apos;s contact
           request.
         </p>
 
@@ -104,7 +104,7 @@ export default async function MessagesListPage() {
                 {role === "lender"
                   ? "Once a borrower approves one of your contact requests, your conversation will appear here."
                   : role === "borrower"
-                    ? "When you approve a verified lender's contact request, your conversation will appear here."
+                    ? "When you approve a lender/broker's contact request, your conversation will appear here."
                     : "Approved contact requests open conversations, which appear here."}
               </p>
             </CardContent>

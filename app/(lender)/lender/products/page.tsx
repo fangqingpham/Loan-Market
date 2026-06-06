@@ -67,10 +67,9 @@ export default async function LenderProductsPage({
         {!isVerified ? (
           <Card className="mt-6">
             <CardContent className="py-10 text-center">
-              <Badge tone="warning">Verification required</Badge>
+              <Badge tone="warning">Account not active yet</Badge>
               <p className="mt-3 text-sm text-slate-600">
-                Only verified lenders can post products. You can post once your account is
-                verified.
+                You can post products once your account is active.
               </p>
               <Link
                 href={ROUTES.lenderDashboard}

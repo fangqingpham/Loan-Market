@@ -34,14 +34,14 @@ const actions: Action[] = [
   {
     icon: "handshake",
     label: "Contact requests",
-    desc: "Approve or decline verified lenders who want to connect.",
+    desc: "Approve or decline lenders/brokers who want to connect.",
     href: ROUTES.borrowerContactRequests,
     cta: "View contact requests",
   },
   {
     icon: "message",
     label: "Messages",
-    desc: "Chat with verified lenders you've approved. Contact details stay private.",
+    desc: "Chat with lenders/brokers you've approved. Contact details stay private.",
     href: ROUTES.messages,
     cta: "Open messages",
   },

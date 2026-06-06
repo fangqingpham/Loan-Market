@@ -129,12 +129,12 @@ export function LoanRequestForm({
           <div className="flex flex-wrap items-center gap-2">
             <Icon name="badge-check" className="h-4 w-4 text-verified-700" />
             <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-              Verified lenders only
+              Lenders/brokers only
             </h2>
             <Badge tone="verified">Hidden from the public</Badge>
           </div>
           <p className="mt-1 text-sm text-slate-600">
-            Optional. These details are shown only to verified lenders to help them gauge
+            Optional. These details are shown only to signed-in lenders and brokers to help them gauge
             fit. Keep them general — never enter exact figures or documents.
           </p>
         </div>

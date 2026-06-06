@@ -59,7 +59,7 @@ export function AdminLenderActions({
             onClick={() => setMode("approve")}
             className="inline-flex h-10 items-center justify-center rounded-xl bg-verified-600 px-4 text-sm font-medium text-white hover:bg-verified-700"
           >
-            Approve &amp; verify
+            Approve &amp; activate
           </button>
         )}
 

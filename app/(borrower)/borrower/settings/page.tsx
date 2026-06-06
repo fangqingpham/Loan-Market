@@ -70,8 +70,8 @@ export default async function BorrowerSettingsPage({
               <span className="text-slate-900">{profile?.email || "—"}</span>
             </div>
             <p className="pt-1 text-xs text-slate-500">
-              This information is visible only to you and is never displayed to lenders or
-              on a loan request.
+              This information is visible only to you and is never displayed to
+              lenders/brokers or on a loan request.
             </p>
           </CardContent>
         </Card>

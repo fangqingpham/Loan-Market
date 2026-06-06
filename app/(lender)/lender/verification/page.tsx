@@ -23,7 +23,7 @@ export default async function LenderVerificationPage({
   if (profile && lenderTypeRequiresLicence(profile.lender_type) && !profile.is_private_lender) {
     redirect(
       `${ROUTES.lenderDashboard}?message=${encodeURIComponent(
-        "Licensed lenders provide a licence number at signup — no form needed."
+        "Lenders and brokers who provide a licence number at signup don't need this form."
       )}`
     );
   }
@@ -57,8 +57,7 @@ export default async function LenderVerificationPage({
 
         <h1 className="mt-4 text-2xl font-bold text-slate-900">Lender details</h1>
         <p className="mt-1 text-sm text-slate-600">
-          Provide your business details and confirmations. An admin reviews account setup
-          — it isn&apos;t automatic.
+          Provide your business details and confirmations to set up your account.
         </p>
 
         {isVerified && (
@@ -68,8 +67,7 @@ export default async function LenderVerificationPage({
               Active
             </Badge>
             <p className="mt-2 text-sm text-slate-700">
-              Your account is active. You can still update your details below; significant
-              changes may be re-reviewed.
+              Your account is active. You can still update your details below.
             </p>
           </div>
         )}

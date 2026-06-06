@@ -96,13 +96,13 @@ export default async function BorrowerContactRequestsPage({
 
   function lenderName(id: string): string {
     const l = lenderById.get(id);
-    if (!l) return "A verified lender";
-    return l.business_name || (l.is_private_lender ? "Private lender" : "Verified lender");
+    if (!l) return "A lender/broker";
+    return l.business_name || (l.is_private_lender ? "Private lender" : "Lender/Broker");
   }
   function lenderKind(id: string): string {
     const l = lenderById.get(id);
-    if (!l) return "Verified lender";
-    return l.is_private_lender ? "Private lender" : lenderTypeLabel[l.lender_type ?? ""] ?? "Licensed lender";
+    if (!l) return "Lender/Broker";
+    return l.is_private_lender ? "Private lender" : lenderTypeLabel[l.lender_type ?? ""] ?? "Lender/Broker";
   }
 
   return (
@@ -118,7 +118,7 @@ export default async function BorrowerContactRequestsPage({
 
         <h1 className="mt-4 text-2xl font-bold text-slate-900">Contact requests</h1>
         <p className="mt-1 text-sm text-slate-600">
-          Verified lenders who want to connect, and the product enquiries you&apos;ve sent.
+          Lenders and brokers who want to connect, and the product enquiries you&apos;ve sent.
           Approving opens a private message thread; contact details stay hidden until then.
         </p>
 
@@ -135,7 +135,7 @@ export default async function BorrowerContactRequestsPage({
 
         {/* Incoming (lender → borrower) */}
         <h2 className="mt-8 text-sm font-semibold uppercase tracking-wide text-slate-500">
-          Lenders requesting contact ({pending.length})
+          Lenders/brokers requesting contact ({pending.length})
         </h2>
         {pending.length === 0 ? (
           <Card className="mt-3">
@@ -238,7 +238,7 @@ export default async function BorrowerContactRequestsPage({
                       {needsPayment && (
                         <div className="rounded-xl border border-amber-200 bg-amber-50 p-3">
                           <p className="text-sm font-medium text-amber-900">
-                            The lender approved your enquiry. Pay {dollars(r.amount_cents)} to open
+                            The lender/broker approved your enquiry. Pay {dollars(r.amount_cents)} to open
                             messaging.
                           </p>
                           <p className="mt-1 text-xs text-amber-800">{PAYMENT_FEE_DISCLAIMER}</p>

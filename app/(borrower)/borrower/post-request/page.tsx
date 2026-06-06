@@ -26,7 +26,7 @@ export default function PostRequestPage({
 
         <h1 className="mt-4 text-2xl font-bold text-slate-900">Post a loan request</h1>
         <p className="mt-1 text-sm text-slate-600">
-          It&apos;s free, and your contact details stay private. Only verified lenders can
+          It&apos;s free, and your contact details stay private. Only lenders and brokers can
           ask to connect, and you approve every connection.
         </p>
 

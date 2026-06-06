@@ -144,9 +144,8 @@ export function LenderVerificationForm({
       <div className="rounded-xl bg-slate-50 p-3">
         <p className="flex items-start gap-2 text-xs text-slate-500">
           <Icon name="badge-check" className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
-          Submitting sends your details to our team for review. Account activation is
-          granted by an admin — it isn&apos;t automatic, and submitting doesn&apos;t change your
-          status by itself.
+          Submitting saves your details. Private-lender accounts are activated manually, so
+          submitting doesn&apos;t change your status by itself.
         </p>
       </div>
 
