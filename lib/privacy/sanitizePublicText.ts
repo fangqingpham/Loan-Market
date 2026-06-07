@@ -1,4 +1,5 @@
 const REDACTION = "[contact hidden]";
+const DIGIT_WORDS = "zero|one|two|three|four|five|six|seven|eight|nine";
 
 type Pattern = {
   regex: RegExp;
@@ -12,6 +13,22 @@ export type SanitizePublicTextResult = {
 };
 
 const patterns: Pattern[] = [
+  {
+    // Contact-channel phrases followed by handles or short instructions.
+    // Numeric values must be checked before @handles so @647-447-0097 is
+    // redacted as one phone number rather than a partial handle.
+    regex:
+      /\b(whats\s*app|whatsapp|telegram|wechat|instagram|insta|facebook|messenger|sms|text(?:\s+me)?|call(?:\s+me)?|email(?:\s+me)?|dm(?:\s+me)?|message(?:\s+me)?|contact(?:\s+me)?|ig|fb)(\s*(?:me|at|on|:|-)?\s+)(@?[+()0-9][+()0-9\s.-]{6,}|@?[a-z0-9._-]{3,})/gi,
+    replace: (match, phrase, separator) => {
+      void match;
+      return `${phrase}${separator}${REDACTION}`;
+    },
+  },
+  {
+    // Markdown mailto/email links, so the label and href are removed together.
+    regex:
+      /\[[^\]]*[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}[^\]]*\]\(\s*(?:mailto:)?[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}\s*\)/gi,
+  },
   {
     // mailto links and normal email addresses.
     regex: /\b(?:mailto:)?[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}\b/gi,
@@ -31,13 +48,8 @@ const patterns: Pattern[] = [
     },
   },
   {
-    // Contact-channel phrases followed by handles or short instructions.
-    regex:
-      /\b(whats\s*app|whatsapp|telegram|wechat|instagram|insta|facebook|messenger|sms|text(?:\s+me)?|call(?:\s+me)?|email(?:\s+me)?|dm(?:\s+me)?|message(?:\s+me)?|ig|fb)(\s*(?:me|at|on|:|-)?\s+)(@?[a-z0-9._-]{3,}|[+()0-9][+()0-9\s.-]{6,})/gi,
-    replace: (match, phrase, separator) => {
-      void match;
-      return `${phrase}${separator}${REDACTION}`;
-    },
+    // Spelled-out phone numbers such as "six four seven four four seven zero zero nine seven".
+    regex: new RegExp(`\\b(?:(?:${DIGIT_WORDS})[\\s-]+){6,}(?:${DIGIT_WORDS})\\b`, "gi"),
   },
   {
     // Standalone social handles. Kept conservative to avoid normal @mentions.

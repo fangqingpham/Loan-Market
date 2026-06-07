@@ -89,7 +89,7 @@ export function PublicLoanRequestCard({
     .join(", ");
 
   const categoryName = categoryLabel[preview.loan_category] ?? preview.loan_category;
-  const borrowerNote = sanitizePublicText(extra?.borrower_note);
+  const safeBorrowerNote = sanitizePublicText(extra?.borrower_note);
   // Short, stable reference so a lender can refer to a specific request.
   const ref = preview.id.slice(0, 8).toUpperCase();
   // The borrower's chosen handle, or a neutral fallback that never exposes identity.
@@ -149,8 +149,8 @@ export function PublicLoanRequestCard({
               <Meta label="Employment" value={extra.employment_type} />
               <Meta label="Interest" value={extra.expected_interest_range} />
             </div>
-            {borrowerNote && (
-              <p className="mt-2 text-base text-slate-600">{borrowerNote}</p>
+            {safeBorrowerNote && (
+              <p className="mt-2 text-base text-slate-600">{safeBorrowerNote}</p>
             )}
           </div>
         )}
