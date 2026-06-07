@@ -20,7 +20,8 @@ export type IconName =
   | "arrow-right"
   | "spark"
   | "tag"
-  | "message";
+  | "message"
+  | "bell";
 
 type IconProps = SVGProps<SVGSVGElement> & { name: IconName };
 
@@ -95,6 +96,12 @@ const paths: Record<IconName, React.ReactNode> = {
     </>
   ),
   message: <path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H8l-4 4V6a1 1 0 0 1 1-1z" />,
+  bell: (
+    <>
+      <path d="M18 9a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
+      <path d="M10 21h4" />
+    </>
+  ),
 };
 
 export function Icon({ name, ...props }: IconProps) {

@@ -6,8 +6,10 @@ import { useState } from "react";
 import { Container } from "./Container";
 import { Button } from "@/components/ui/Button";
 import { LogoutButton } from "@/components/auth/LogoutButton";
+import { NotificationBell } from "@/components/layout/NotificationBell";
 import { APP_NAME, ROUTES, PRICING_VISIBLE } from "@/lib/constants";
 import { cn } from "@/lib/helpers";
+import type { NotificationSummary } from "@/lib/notifications";
 import logo from "@/app/(public)/photo/LM.png";
 
 const navLinks = [
@@ -25,7 +27,13 @@ const navLinks = [
  * component) and is non-null only when a user is signed in — in that case we
  * show a Dashboard link + Log out instead of Log in / Sign up.
  */
-export function Navbar({ dashboardHref }: { dashboardHref?: string | null }) {
+export function Navbar({
+  dashboardHref,
+  notifications,
+}: {
+  dashboardHref?: string | null;
+  notifications?: NotificationSummary;
+}) {
   const [open, setOpen] = useState(false);
   const signedIn = Boolean(dashboardHref);
 
@@ -58,6 +66,10 @@ export function Navbar({ dashboardHref }: { dashboardHref?: string | null }) {
           <div className="flex items-center gap-2">
             {signedIn ? (
               <>
+                <NotificationBell
+                  unreadCount={notifications?.unreadCount ?? 0}
+                  notifications={notifications?.notifications ?? []}
+                />
                 <Link href={dashboardHref!}>
                   <Button variant="ghost" size="sm">Dashboard</Button>
                 </Link>
@@ -109,6 +121,12 @@ export function Navbar({ dashboardHref }: { dashboardHref?: string | null }) {
             ))}
             {signedIn ? (
               <div className="mt-2 flex flex-col gap-2">
+                <div className="flex justify-end px-1">
+                  <NotificationBell
+                    unreadCount={notifications?.unreadCount ?? 0}
+                    notifications={notifications?.notifications ?? []}
+                  />
+                </div>
                 <Link href={dashboardHref!} onClick={() => setOpen(false)}>
                   <Button variant="outline" size="sm" className="w-full">Dashboard</Button>
                 </Link>

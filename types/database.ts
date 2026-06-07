@@ -74,6 +74,15 @@ export type ReportReason =
   | "suspicious_behaviour"
   | "other";
 
+/** In-app notification categories (stored as text for future extensibility). */
+export type NotificationType =
+  | "new_message"
+  | "contact_request_new"
+  | "contact_request_approved"
+  | "contact_request_declined"
+  | "platform_update"
+  | string;
+
 export type Database = {
   public: {
     Tables: {
@@ -420,6 +429,29 @@ export type Database = {
           expires_at?: string | null;
         };
         Update: never;
+        Relationships: [];
+      };
+      notifications: {
+        Row: {
+          id: string;
+          user_id: string;
+          type: NotificationType;
+          title: string;
+          body: string | null;
+          link_url: string | null;
+          related_entity_type: string | null;
+          related_entity_id: string | null;
+          read_at: string | null;
+          created_at: string;
+        };
+        // Notification rows are created by database triggers or trusted
+        // server/service-role code, not arbitrary client inserts.
+        Insert: never;
+        // Users may only mark notifications read/unread. SQL grants update
+        // privileges on read_at only; RLS additionally limits rows by user_id.
+        Update: {
+          read_at?: string | null;
+        };
         Relationships: [];
       };
       reports: {
