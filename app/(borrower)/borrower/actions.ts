@@ -18,6 +18,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase-server";
 import { getBorrowerProfileId } from "@/lib/auth";
+import { sanitizePublicTextWithResult } from "@/lib/privacy/sanitizePublicText";
 import {
   ROUTES,
   LOAN_CATEGORIES,
@@ -46,6 +47,8 @@ const LIST = ROUTES.borrowerMyRequests;
 const LOAN_CATEGORY_VALUES = LOAN_CATEGORIES.map((c) => c.value) as string[];
 const PROVINCE_VALUES = PROVINCES.map((p) => p.value) as string[];
 const SECURED_VALUES = SECURED_STATUS_OPTIONS.map((o) => o.value) as string[];
+const REDACTION_MESSAGE =
+  "For privacy, direct contact details were hidden. Connections must go through approved contact requests.";
 
 /** Redirect back to a page with an error message (never returns). */
 function fail(path: string, message: string): never {
@@ -77,7 +80,7 @@ function parseFields(formData: FormData, errorPath: string) {
   const employmentType = str(formData, "employment_type");
   const loanTermRange = str(formData, "loan_term_range");
   const expectedInterestRange = str(formData, "expected_interest_range");
-  const borrowerNote = str(formData, "borrower_note");
+  const borrowerNote = sanitizePublicTextWithResult(str(formData, "borrower_note"));
 
   // Required public-preview fields.
   if (!loanCategory) fail(errorPath, "Please choose a loan category.");
@@ -106,7 +109,8 @@ function parseFields(formData: FormData, errorPath: string) {
     employment_type: orNull(employmentType),
     loan_term_range: orNull(loanTermRange),
     expected_interest_range: orNull(expectedInterestRange),
-    borrower_note: orNull(borrowerNote),
+    borrower_note: orNull(borrowerNote.text),
+    publicTextRedacted: borrowerNote.redacted,
   };
 }
 
@@ -115,18 +119,22 @@ export async function createLoanRequestAction(formData: FormData): Promise<void>
   if (!borrowerId) fail(POST, "Only borrowers can post a loan request.");
 
   const fields = parseFields(formData, POST);
+  const { publicTextRedacted, ...loanFields } = fields;
 
   const supabase = createClient();
   const payload: LoanRequestInsert = {
     borrower_id: borrowerId,
     status: "active",
-    ...fields,
+    ...loanFields,
   };
   const { error } = await supabase.from("loan_requests").insert(payload as never);
   if (error) fail(POST, "Could not post your request. Please try again.");
 
   revalidatePath(LIST);
-  redirect(`${LIST}?message=${encodeURIComponent("Your loan request is now active.")}`);
+  const message = publicTextRedacted
+    ? `Your loan request is now active. ${REDACTION_MESSAGE}`
+    : "Your loan request is now active.";
+  redirect(`${LIST}?message=${encodeURIComponent(message)}`);
 }
 
 export async function updateLoanRequestAction(formData: FormData): Promise<void> {
@@ -151,13 +159,18 @@ export async function updateLoanRequestAction(formData: FormData): Promise<void>
     fail(LIST, "This request was removed by an admin and can't be edited.");
   }
 
-  const patch: LoanRequestUpdate = parseFields(formData, editPath);
+  const fields = parseFields(formData, editPath);
+  const { publicTextRedacted, ...loanFields } = fields;
+  const patch: LoanRequestUpdate = loanFields;
 
   const { error } = await supabase.from("loan_requests").update(patch as never).eq("id", id);
   if (error) fail(editPath, "Could not save your changes. Please try again.");
 
   revalidatePath(LIST);
-  redirect(`${LIST}?message=${encodeURIComponent("Your changes have been saved.")}`);
+  const message = publicTextRedacted
+    ? `Your changes have been saved. ${REDACTION_MESSAGE}`
+    : "Your changes have been saved.";
+  redirect(`${LIST}?message=${encodeURIComponent(message)}`);
 }
 
 /** Shared status flip for delist/relist (borrower-controlled transitions only). */

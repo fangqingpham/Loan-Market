@@ -4,6 +4,7 @@ import { LicenceBadge } from "./LicenceBadge";
 import { ReportButton } from "@/components/safety";
 import { LOAN_CATEGORIES, SECURED_STATUS_OPTIONS } from "@/lib/constants";
 import { formatDate } from "@/lib/helpers";
+import { sanitizePublicText } from "@/lib/privacy/sanitizePublicText";
 import type { ContactRequestStatus } from "@/types/database";
 
 const categoryLabel = Object.fromEntries(LOAN_CATEGORIES.map((c) => [c.value, c.label]));
@@ -52,6 +53,8 @@ export function PublicProductCard({
 }) {
   const company =
     product.business_name || (product.is_private_lender ? "Private lender" : "Lender/Broker");
+  const productDescription = sanitizePublicText(product.product_description);
+  const importantConditions = sanitizePublicText(product.important_conditions);
 
   return (
     <Card className="flex h-full flex-col">
@@ -86,13 +89,13 @@ export function PublicProductCard({
           <Meta label="Secured" value={securedLabel[product.secured_status ?? ""] ?? null} />
         </div>
 
-        {product.product_description && (
-          <p className="text-base text-slate-700">{product.product_description}</p>
+        {productDescription && (
+          <p className="text-base text-slate-700">{productDescription}</p>
         )}
-        {product.important_conditions && (
+        {importantConditions && (
           <p className="rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-600">
             <span className="font-medium text-slate-700">Important conditions:</span>{" "}
-            {product.important_conditions}
+            {importantConditions}
           </p>
         )}
 

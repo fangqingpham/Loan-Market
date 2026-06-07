@@ -8,6 +8,7 @@ import {
   ROUTES,
 } from "@/lib/constants";
 import { formatDate } from "@/lib/helpers";
+import { sanitizePublicText } from "@/lib/privacy/sanitizePublicText";
 import {
   delistLoanRequestAction,
   relistLoanRequestAction,
@@ -39,6 +40,7 @@ function Meta({ label, value }: { label: string; value: string | null }) {
 export function BorrowerRequestCard({ request }: { request: LoanRequestRow }) {
   const editHref = `${ROUTES.borrowerMyRequests}/${request.id}/edit`;
   const isRemoved = request.status === "removed_by_admin";
+  const borrowerNote = sanitizePublicText(request.borrower_note);
 
   return (
     <Card>
@@ -70,7 +72,7 @@ export function BorrowerRequestCard({ request }: { request: LoanRequestRow }) {
           request.employment_type ||
           request.loan_term_range ||
           request.expected_interest_range ||
-          request.borrower_note) && (
+          borrowerNote) && (
           <div className="rounded-xl border border-slate-100 bg-slate-50 p-3">
             <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
               <Icon name="badge-check" className="h-3.5 w-3.5 text-verified-700" />
@@ -83,8 +85,8 @@ export function BorrowerRequestCard({ request }: { request: LoanRequestRow }) {
               <Meta label="Term" value={request.loan_term_range} />
               <Meta label="Interest" value={request.expected_interest_range} />
             </div>
-            {request.borrower_note && (
-              <p className="mt-2 text-sm text-slate-600">{request.borrower_note}</p>
+            {borrowerNote && (
+              <p className="mt-2 text-sm text-slate-600">{borrowerNote}</p>
             )}
           </div>
         )}

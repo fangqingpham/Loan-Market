@@ -110,6 +110,9 @@ export function LenderProductForm({
           maxLength={2000}
           placeholder="Describe the product in general terms: who it suits, typical structure, what makes it competitive."
         />
+        <p className="text-xs text-slate-500">
+          Please do not include phone numbers, emails, websites, or social handles. Contact details are shared only after approval.
+        </p>
         <Textarea
           id="important_conditions"
           name="important_conditions"
@@ -118,6 +121,9 @@ export function LenderProductForm({
           maxLength={2000}
           placeholder="Key conditions a borrower should know up front (e.g. minimum down payment, property types, fees)."
         />
+        <p className="text-xs text-slate-500">
+          Please do not include phone numbers, emails, websites, or social handles. Contact details are shared only after approval.
+        </p>
       </section>
 
       {/* Posting note (no contact details) */}

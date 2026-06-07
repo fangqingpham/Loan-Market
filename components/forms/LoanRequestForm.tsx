@@ -185,6 +185,9 @@ export function LoanRequestForm({
           maxLength={1000}
           placeholder="Add helpful context about your situation. Do not include personal identifiers, documents, or exact account details."
         />
+        <p className="text-xs text-slate-500">
+          Please do not include phone numbers, emails, websites, or social handles. Contact details are shared only after approval.
+        </p>
       </section>
 
       {/* ── Required safety warning + acknowledgement ─────────── */}
