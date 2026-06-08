@@ -96,6 +96,7 @@ export default async function ThreadPage({
     .eq("conversation_id", conversation.id)
     .order("created_at", { ascending: true });
   const messages = (msgData as MsgRow[] | null) ?? [];
+  const hasSentMessage = messages.some((message) => message.sender_user_id === profile.userId);
 
   // Has the current user blocked their partner? (participants only)
   let iBlocked = false;
@@ -193,10 +194,11 @@ export default async function ThreadPage({
         {canSend ? (
           <form action={sendMessageAction} className="mt-6 flex flex-col gap-2">
             <input type="hidden" name="conversation_id" value={conversation.id} />
-            {messages.length === 0 && (
+            {!hasSentMessage && (
               <label className="flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
                 <input
                   type="checkbox"
+                  name="safety_ack"
                   required
                   className="mt-0.5 h-4 w-4 rounded border-amber-400"
                 />

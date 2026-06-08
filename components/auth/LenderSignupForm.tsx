@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button, Input, Select } from "@/components/ui";
+import { TermsAgreementField } from "@/components/auth/TermsAgreementField";
 import { signupLenderAction } from "@/app/(auth)/actions";
 import { LICENCE_REQUIRED_LENDER_TYPES } from "@/lib/constants";
 import type { LenderType } from "@/types/database";
@@ -28,6 +29,7 @@ export function LenderSignupForm({
   intakeNote: string;
 }) {
   const [lenderType, setLenderType] = useState("");
+  const [termsAgreed, setTermsAgreed] = useState(false);
   const requiresLicence = LICENCE_REQUIRED_LENDER_TYPES.includes(lenderType as LenderType);
   const typeChosen = lenderType !== "";
 
@@ -78,15 +80,12 @@ export function LenderSignupForm({
       <p className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-500">
         {intakeNote}
       </p>
-      <label className="flex items-start gap-2 text-sm text-slate-600">
-        <input type="checkbox" name="agree" required className="mt-0.5 h-4 w-4 rounded border-slate-300" />
-        <span>I agree to the Terms of Service, Privacy Policy, and Disclaimer.</span>
-      </label>
+      <TermsAgreementField agreed={termsAgreed} onAgreeChange={setTermsAgreed} />
       <label className="flex items-start gap-2 text-sm text-slate-600">
         <input type="checkbox" name="agree_rules" required className="mt-0.5 h-4 w-4 rounded border-slate-300" />
         <span>I agree to the platform rules (no upfront fees, interest-rate compliance, honest conduct).</span>
       </label>
-      <Button type="submit" className="w-full">Create account</Button>
+      <Button type="submit" disabled={!termsAgreed} className="w-full">Create account</Button>
     </form>
   );
 }

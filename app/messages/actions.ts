@@ -28,6 +28,7 @@ function str(formData: FormData, key: string): string {
 export async function sendMessageAction(formData: FormData): Promise<void> {
   const conversationId = str(formData, "conversation_id");
   const body = str(formData, "body");
+  const safetyAck = formData.get("safety_ack");
 
   const thread = `${ROUTES.messages}/${conversationId}`;
 
@@ -39,6 +40,18 @@ export async function sendMessageAction(formData: FormData): Promise<void> {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect(ROUTES.login);
+
+  const { count, error: countError } = await supabase
+    .from("messages")
+    .select("id", { count: "exact", head: true })
+    .eq("conversation_id", conversationId)
+    .eq("sender_user_id", user.id);
+  if (countError) {
+    redirect(`${thread}?error=${encodeURIComponent("Could not send your message.")}`);
+  }
+  if ((count ?? 0) === 0 && safetyAck !== "on") {
+    redirect(`${thread}?error=${encodeURIComponent("Please confirm the safety notice before your first message.")}`);
+  }
 
   // Build a properly-typed payload, cast only at the call boundary (the same
   // postgrest `never`-widening workaround used elsewhere in the app).
