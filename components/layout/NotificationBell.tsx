@@ -82,10 +82,9 @@ export function NotificationBell({
                 return (
                   <form key={notification.id} action={openNotificationAction}>
                     <input type="hidden" name="notification_id" value={notification.id} />
-                    <input type="hidden" name="link_url" value={notification.link_url || pathname} />
+                    <input type="hidden" name="link_url" value={notification.link_url || ""} />
                     <button
                       type="submit"
-                      onClick={() => setOpen(false)}
                       className={cn(
                         "block w-full border-b border-slate-100 px-4 py-3 text-left last:border-b-0 hover:bg-slate-50",
                         unread && "bg-brand-50/50"
