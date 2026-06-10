@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
+import { APP_NAME, APP_TAGLINE } from "@/lib/constants";	
 import { getCurrentProfile, dashboardPathFor } from "@/lib/auth";
 import { getNotificationSummary } from "@/lib/notifications";
 
@@ -13,6 +13,10 @@ export const metadata: Metadata = {
   },
   description:
     "Loan Market connects borrowers with trusted lenders. Borrower contact details stay private until you approve a trusted lender's request.",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-icon.png",
+  },
 };
 
 export default async function RootLayout({

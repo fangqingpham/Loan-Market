@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/layout/Container";
-import { Icon, FlashModal } from "@/components/ui";
+import { Icon, FlashModal, Pagination } from "@/components/ui";
 import { PublicProductCard, type ProductCardData } from "@/components/cards";
 import { DEMO_PRODUCTS } from "@/lib/demo-data";
 import { createClient } from "@/lib/supabase-server";
@@ -14,10 +14,37 @@ export const metadata: Metadata = {
     "Browse loan products from trusted lenders/brokers. Lender/broker contact details stay private — connecting opens an in-platform conversation only.",
 };
 
+const PAGE_SIZE = 20;
+const FEATURED_COUNT = 10;
+
+/**
+ * Board ordering for the public products page:
+ *  - PAGE 1 shows the first 20 listings by post date (oldest first) — the
+ *    established/founding listings — and the first 10 of those are flagged
+ *    "Featured".
+ *  - FROM PAGE 2 onward, every remaining (newer) listing is shown latest-first.
+ *
+ * NOTE (ordering assumption): the spec said "show the first 20 posts on the
+ * first page ... from the 2nd page, show the latest posts first", which only
+ * differs from a plain newest-first board if page 1 is NOT newest-first — hence
+ * page 1 = oldest 20. To instead make the WHOLE board simply latest-first
+ * (page 1 = newest 20, newest 10 featured), replace this function body with:
+ *   return [...items].sort((a, b) => b.created_at.localeCompare(a.created_at));
+ */
+function arrangeProducts(items: ProductCardData[]): ProductCardData[] {
+  const oldestFirst = [...items].sort((a, b) => a.created_at.localeCompare(b.created_at));
+  const firstPage = oldestFirst.slice(0, PAGE_SIZE);
+  const firstPageIds = new Set(firstPage.map((p) => p.id));
+  const rest = items
+    .filter((p) => !firstPageIds.has(p.id))
+    .sort((a, b) => b.created_at.localeCompare(a.created_at));
+  return [...firstPage, ...rest];
+}
+
 export default async function LoanProductsPage({
   searchParams,
 }: {
-  searchParams?: { message?: string; error?: string };
+  searchParams?: { message?: string; error?: string; page?: string };
 }) {
   const role = await getCurrentUserRole(); // null when logged out
   const supabase = createClient();
@@ -32,9 +59,21 @@ export default async function LoanProductsPage({
     .order("created_at", { ascending: false })
     .limit(100);
   const products = (data as ProductCardData[] | null) ?? [];
+
+  // Page 1 = first 20 posts (first 10 featured); page 2+ = latest first.
+  const arranged = arrangeProducts(products);
+  const totalPages = Math.max(1, Math.ceil(arranged.length / PAGE_SIZE));
+  const currentPage = Math.min(
+    Math.max(1, Number.parseInt(searchParams?.page ?? "1", 10) || 1),
+    totalPages
+  );
+  const pageStart = (currentPage - 1) * PAGE_SIZE;
+  const pageProducts = arranged.slice(pageStart, pageStart + PAGE_SIZE);
+
   // Pre-launch, demo cards always show. After launch, only when empty.
-  // Toggle via SHOW_DEMO_CARDS_ALWAYS in lib/constants.ts.
-  const showDemos = SHOW_DEMO_CARDS_ALWAYS || products.length === 0;
+  // Toggle via SHOW_DEMO_CARDS_ALWAYS in lib/constants.ts. First page only so
+  // they don't repeat beneath every paginated page.
+  const showDemos = currentPage === 1 && (SHOW_DEMO_CARDS_ALWAYS || products.length === 0);
 
   // For a borrower, fetch their existing borrower→lender requests so each card
   // shows the right state (and doesn't offer a duplicate). RLS limits these to
@@ -77,17 +116,25 @@ export default async function LoanProductsPage({
 
       <Container className="py-8">
         {products.length > 0 && (
-          <div className="grid gap-5 sm:grid-cols-2">
-            {products.map((p) => (
-              <PublicProductCard
-                key={p.id}
-                product={p}
-                viewerRole={role}
-                contactStatus={statusByListing.get(p.id) ?? null}
-                returnTo={ROUTES.loanProducts}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 gap-5">
+              {pageProducts.map((p, i) => (
+                <PublicProductCard
+                  key={p.id}
+                  product={p}
+                  viewerRole={role}
+                  contactStatus={statusByListing.get(p.id) ?? null}
+                  returnTo={ROUTES.loanProducts}
+                  featured={pageStart + i < FEATURED_COUNT}
+                />
+              ))}
+            </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              basePath={ROUTES.loanProducts}
+            />
+          </>
         )}
 
         {showDemos && (
@@ -97,7 +144,7 @@ export default async function LoanProductsPage({
                 ? "Example products shown below to illustrate the board while we grow. Real lender/broker products appear above."
                 : "These are example products that show how the board looks. Real lender/broker products will appear here as trusted lenders/brokers post them."}
             </div>
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-5">
               {DEMO_PRODUCTS.map((p) => (
                 <PublicProductCard key={p.id} product={p} viewerRole={role} demo />
               ))}

@@ -43,6 +43,7 @@ export function PublicProductCard({
   contactStatus,
   returnTo,
   demo,
+  featured,
 }: {
   product: ProductCardData;
   viewerRole: "borrower" | "lender" | "admin" | null;
@@ -50,6 +51,8 @@ export function PublicProductCard({
   returnTo?: string;
   /** Illustrative placeholder card — shows a sample (disabled) Contact button. */
   demo?: boolean;
+  /** Highlights the card with a "Featured" badge (first cards on the board). */
+  featured?: boolean;
 }) {
   const company =
     product.business_name || (product.is_private_lender ? "Private lender" : "Lender/Broker");
@@ -57,13 +60,19 @@ export function PublicProductCard({
   const importantConditions = sanitizePublicText(product.important_conditions);
 
   return (
-    <Card className="flex h-full flex-col">
+    <Card className={`flex h-full flex-col${featured ? " ring-1 ring-brand-200" : ""}`}>
       <CardContent className="flex flex-1 flex-col space-y-3">
         {/* Header: title + company + licence (self-reported) */}
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-lg font-semibold text-slate-900">{product.product_title}</h3>
+              {featured && (
+                <Badge tone="brand">
+                  <Icon name="spark" className="h-3.5 w-3.5" />
+                  Featured
+                </Badge>
+              )}
               {demo && <Badge tone="neutral">Example</Badge>}
             </div>
             <div className="mt-1">

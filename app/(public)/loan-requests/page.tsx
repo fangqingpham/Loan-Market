@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { Container } from "@/components/layout/Container";
-import { Button, Card, CardContent, Badge, Icon, FlashModal } from "@/components/ui";
+import { Button, Card, CardContent, Badge, Icon, FlashModal, Pagination } from "@/components/ui";
 import { PublicLoanRequestCard, type PublicPreview, type LenderExtra } from "@/components/cards";
 import { LoanRequestFilters } from "@/components/forms/LoanRequestFilters";
 import { DEMO_LOAN_REQUESTS } from "@/lib/demo-data";
@@ -133,6 +133,7 @@ export default async function LoanRequestsPage({
     secured?: string;
     message?: string;
     error?: string;
+    page?: string;
   };
 }) {
   const verificationStatus = await getLenderVerificationStatus();
@@ -149,9 +150,21 @@ export default async function LoanRequestsPage({
 
   const results = await fetchRequests(isVerified, filters);
   const hasFilters = Object.values(filters).some(Boolean);
+
+  // Paginate the board at 20 cards per page (rendered 1 card per row).
+  const PAGE_SIZE = 20;
+  const totalPages = Math.max(1, Math.ceil(results.length / PAGE_SIZE));
+  const currentPage = Math.min(
+    Math.max(1, Number.parseInt(searchParams?.page ?? "1", 10) || 1),
+    totalPages
+  );
+  const pageResults = results.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
   // Pre-launch, demo cards always show (unless filtering). After launch, they
   // show only when there are no real results. Toggle via SHOW_DEMO_CARDS_ALWAYS.
-  const showDemos = !hasFilters && (SHOW_DEMO_CARDS_ALWAYS || results.length === 0);
+  // Restricted to the first page so they don't repeat beneath every page.
+  const showDemos =
+    currentPage === 1 && !hasFilters && (SHOW_DEMO_CARDS_ALWAYS || results.length === 0);
 
   return (
     <>
@@ -222,18 +235,26 @@ export default async function LoanRequestsPage({
 
         {/* Results */}
         {results.length > 0 && (
-          <div className="mt-6 grid gap-5 sm:grid-cols-2">
-            {results.map((r) => (
-              <PublicLoanRequestCard
-                key={r.preview.id}
-                preview={r.preview}
-                extra={r.extra}
-                canRequestContact={isVerified}
-                contactStatus={r.contactStatus}
-                reportReturnTo={signedIn ? ROUTES.loanRequests : undefined}
-              />
-            ))}
-          </div>
+          <>
+            <div className="mt-6 grid grid-cols-1 gap-5">
+              {pageResults.map((r) => (
+                <PublicLoanRequestCard
+                  key={r.preview.id}
+                  preview={r.preview}
+                  extra={r.extra}
+                  canRequestContact={isVerified}
+                  contactStatus={r.contactStatus}
+                  reportReturnTo={signedIn ? ROUTES.loanRequests : undefined}
+                />
+              ))}
+            </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              basePath={ROUTES.loanRequests}
+              params={filters}
+            />
+          </>
         )}
 
         {/* No real results AND filtering — prompt to adjust filters */}
@@ -261,7 +282,7 @@ export default async function LoanRequestsPage({
                 ? "Example requests shown below to illustrate the board while we grow. Real borrower requests appear above."
                 : "These are example requests that show how the board looks. Real borrower requests will appear here as borrowers post them."}
             </div>
-            <div className="mt-4 grid gap-5 sm:grid-cols-2">
+            <div className="mt-4 grid grid-cols-1 gap-5">
               {DEMO_LOAN_REQUESTS.map((p) => (
                 <PublicLoanRequestCard key={p.id} preview={p} demo />
               ))}

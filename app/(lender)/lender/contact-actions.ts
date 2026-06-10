@@ -16,9 +16,15 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase-server";
 import { ROUTES, DAILY_CONTACT_LIMIT_MESSAGE } from "@/lib/constants";
+import type { Database } from "@/types/database";
 
 const BOARD = ROUTES.loanRequests;
 const LENDER_CR = ROUTES.lenderContactRequests;
+
+type ProfileRole = Pick<Database["public"]["Tables"]["profiles"]["Row"], "role">;
+type LenderStatus = Pick<Database["public"]["Tables"]["lender_profiles"]["Row"], "id" | "verification_status">;
+type LoanRequestStatus = Pick<Database["public"]["Tables"]["loan_requests"]["Row"], "id" | "status">;
+type ExistingContact = Pick<Database["public"]["Tables"]["contact_requests"]["Row"], "id" | "status">;
 
 function backWith(path: string, key: "message" | "error", text: string): never {
   redirect(`${path}?${key}=${encodeURIComponent(text)}`);
@@ -26,6 +32,12 @@ function backWith(path: string, key: "message" | "error", text: string): never {
 
 function str(formData: FormData, key: string): string {
   return String(formData.get(key) ?? "").trim();
+}
+
+function logContactError(context: string, error: unknown): void {
+  if (process.env.NODE_ENV !== "production") {
+    console.error(`[requestContactAction] ${context}`, error);
+  }
 }
 
 /**
@@ -51,6 +63,9 @@ async function redirectToConversation(requestId: string): Promise<void> {
  */
 function friendly(message: string | undefined): string {
   const m = (message ?? "").toLowerCase();
+  if (m.includes("not authenticated") || m.includes("jwt")) {
+    return "Please log in as a verified lender to contact borrowers.";
+  }
   if (m.includes("daily_contact_limit_reached")) {
     return DAILY_CONTACT_LIMIT_MESSAGE;
   }
@@ -58,16 +73,22 @@ function friendly(message: string | undefined): string {
     return "You don't have enough credits to contact this borrower. Please buy more credits and try again.";
   }
   if (m.includes("only verified lenders")) {
-    return "Your account needs to be active before you can request borrower contact.";
+    return "Your lender profile must be verified before requesting contact.";
   }
   if (m.includes("already exists")) {
-    return "You already have an active contact request for this loan request.";
+    return "You already requested contact for this borrower.";
   }
   if (m.includes("not found") || m.includes("not active")) {
     return "That loan request is no longer available.";
   }
   if (m.includes("not allowed")) {
     return "Contact is not allowed for this request.";
+  }
+  if (m.includes("lender_contact_credits_enabled")) {
+    return "Marketplace contact settings are not fully configured yet. Please try again shortly.";
+  }
+  if (m.includes("row-level security") || m.includes("permission denied")) {
+    return "Please log in as a verified lender to contact borrowers.";
   }
   return "Could not complete that action. Please try again.";
 }
@@ -79,18 +100,90 @@ export async function requestContactAction(formData: FormData): Promise<void> {
   if (!loanRequestId) backWith(returnTo, "error", "Missing loan request.");
 
   const supabase = createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (userError) logContactError("auth.getUser failed", userError);
+  if (!user) backWith(returnTo, "error", "Please log in as a verified lender to contact borrowers.");
+
+  const { data: profileData, error: profileError } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (profileError) {
+    logContactError("profile lookup failed", profileError);
+    backWith(returnTo, "error", friendly(profileError.message));
+  }
+  const profile = profileData as ProfileRole | null;
+  if (profile?.role !== "lender") {
+    backWith(returnTo, "error", "Please log in as a verified lender to contact borrowers.");
+  }
+
+  const { data: lenderData, error: lenderError } = await supabase
+    .from("lender_profiles")
+    .select("id, verification_status")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (lenderError) {
+    logContactError("lender profile lookup failed", lenderError);
+    backWith(returnTo, "error", friendly(lenderError.message));
+  }
+  const lender = lenderData as LenderStatus | null;
+  if (!lender) {
+    backWith(returnTo, "error", "Please log in as a verified lender to contact borrowers.");
+  }
+  if (lender.verification_status !== "verified") {
+    backWith(returnTo, "error", "Your lender profile must be verified before requesting contact.");
+  }
+
+  const { data: loanData, error: loanError } = await supabase
+    .from("loan_requests")
+    .select("id, status")
+    .eq("id", loanRequestId)
+    .maybeSingle();
+  if (loanError) {
+    logContactError("loan request lookup failed", loanError);
+    backWith(returnTo, "error", friendly(loanError.message));
+  }
+  const loanRequest = loanData as LoanRequestStatus | null;
+  if (!loanRequest || loanRequest.status !== "active") {
+    backWith(returnTo, "error", "This borrower request is no longer available.");
+  }
+
+  const { data: existingData, error: existingError } = await supabase
+    .from("contact_requests")
+    .select("id, status")
+    .eq("direction", "lender_to_borrower")
+    .eq("lender_id", lender.id)
+    .eq("loan_request_id", loanRequestId)
+    .in("status", ["pending", "approved_pending_payment", "approved"])
+    .maybeSingle();
+  if (existingError) {
+    logContactError("duplicate contact lookup failed", existingError);
+    backWith(returnTo, "error", friendly(existingError.message));
+  }
+  const existing = existingData as ExistingContact | null;
+  if (existing) {
+    backWith(returnTo, "error", "You already requested contact for this borrower.");
+  }
+
   const { error } = await supabase.rpc("request_loan_request_contact", {
     p_loan_request_id: loanRequestId,
   } as never);
 
-  if (error) backWith(returnTo, "error", friendly(error.message));
+  if (error) {
+    logContactError("request_loan_request_contact failed", error);
+    backWith(returnTo, "error", friendly(error.message));
+  }
 
   revalidatePath(returnTo);
   revalidatePath(LENDER_CR);
   backWith(
     returnTo,
     "message",
-    "Contact request sent. The borrower will be notified to approve or decline."
+    "Request sent successfully. The borrower will review your request."
   );
 }
 

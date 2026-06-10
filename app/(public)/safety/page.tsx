@@ -265,7 +265,7 @@ export default function SafetyPage() {
                     <th className="px-4 py-3">Credit union</th>
                     <th className="px-4 py-3">Corporate registry</th>
                     <th className="px-4 py-3">Consumer / high-cost lender</th>
-                    <th className="px-4 py-3">Mortgage broker</th>
+                    <th className="px-4 py-3">Mortgage licence</th>
                   </tr>
                 </thead>
                 <tbody>

@@ -264,7 +264,7 @@ export const REGULATOR_CHECK_CTA = "Check this licence with the regulator";
  * confirms the data. For other provinces, see OTHER_PROVINCE_REGULATORS below.
  */
 export const PRIMARY_REGULATOR_REGISTER_URL =
-  "https://alias2a.fsco.gov.on.ca/agents.aspx";
+  "https://mbsweblist.fsco.gov.on.ca/agents.aspx";
 
 /** Short note clarifying the primary link's scope. */
 export const ONTARIO_ONLY_NOTE =

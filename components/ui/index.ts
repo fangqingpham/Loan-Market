@@ -7,3 +7,4 @@ export { Select } from "./Select";
 export { Badge } from "./Badge";
 export { Icon, type IconName } from "./Icon";
 export { FlashModal } from "./FlashModal";
+export { Pagination } from "./Pagination";
