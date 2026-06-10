@@ -10,7 +10,7 @@ import type { IconName } from "@/components/ui/Icon";
  * moves, search the organisation name shown next to it.
  */
 
-export type VerificationLink = { label: string; href: string };
+export type VerificationLink = { label: string; href?: string };
 
 const CBR: VerificationLink = {
   label: "Canada's Business Registries",

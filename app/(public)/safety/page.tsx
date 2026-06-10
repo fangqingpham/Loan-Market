@@ -6,6 +6,7 @@ import { CTASection } from "@/components/marketing/CTASection";
 import { Section } from "@/components/marketing/Section";
 import { APP_NAME, PLATFORM_DISCLAIMER, SAFETY_WARNINGS } from "@/lib/constants";
 import {
+  type VerificationLink,
   VERIFY_BY_TYPE,
   NATIONAL_VERIFICATION_LINKS,
   PROVINCE_VERIFICATION_LINKS,
@@ -69,6 +70,16 @@ function ExtLink({ href, children }: { href: string; children: ReactNode }) {
 /** Placeholder for a province/territory with no link in a given category. */
 function Dash() {
   return <span className="text-slate-400">—</span>;
+}
+
+/**
+ * Renders one table cell: a real outbound link, plain text when the entry has a
+ * label but no href (e.g. "Not Available"), or a dash when the entry is null.
+ */
+function LinkCell({ link }: { link: VerificationLink | null }) {
+  if (!link) return <Dash />;
+  if (!link.href) return <span className="text-slate-500">{link.label}</span>;
+  return <ExtLink href={link.href}>{link.label}</ExtLink>;
 }
 
 export default function SafetyPage() {
@@ -273,32 +284,16 @@ export default function SafetyPage() {
                     <tr key={p.name} className="border-t border-slate-100 align-top">
                       <td className="px-4 py-3 font-medium text-slate-900">{p.name}</td>
                       <td className="px-4 py-3">
-                        {p.creditUnion ? (
-                          <ExtLink href={p.creditUnion.href}>{p.creditUnion.label}</ExtLink>
-                        ) : (
-                          <Dash />
-                        )}
+                        <LinkCell link={p.creditUnion} />
                       </td>
                       <td className="px-4 py-3">
-                        {p.corporate ? (
-                          <ExtLink href={p.corporate.href}>{p.corporate.label}</ExtLink>
-                        ) : (
-                          <Dash />
-                        )}
+                        <LinkCell link={p.corporate} />
                       </td>
                       <td className="px-4 py-3">
-                        {p.lenderLicence ? (
-                          <ExtLink href={p.lenderLicence.href}>{p.lenderLicence.label}</ExtLink>
-                        ) : (
-                          <Dash />
-                        )}
+                        <LinkCell link={p.lenderLicence} />
                       </td>
                       <td className="px-4 py-3">
-                        {p.mortgage ? (
-                          <ExtLink href={p.mortgage.href}>{p.mortgage.label}</ExtLink>
-                        ) : (
-                          <Dash />
-                        )}
+                        <LinkCell link={p.mortgage} />
                       </td>
                     </tr>
                   ))}
