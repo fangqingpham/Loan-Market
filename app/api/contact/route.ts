@@ -105,16 +105,20 @@ export async function POST(req: Request) {
     };
 
     if (!res.ok || !result.success) {
-      console.error("[contact] Web3Forms send failed:", res.status, result.message);
+      const detail = result.message ?? `Web3Forms responded with HTTP ${res.status}`;
+      console.error("[contact] Web3Forms send failed:", res.status, detail);
       return NextResponse.json(
-        { error: "We couldn't send your message. Please try again shortly." },
+        { error: "We couldn't send your message. Please try again shortly.", detail },
         { status: 502 }
       );
     }
   } catch (err) {
     console.error("[contact] Web3Forms request error:", err);
     return NextResponse.json(
-      { error: "We couldn't send your message. Please try again shortly." },
+      {
+        error: "We couldn't send your message. Please try again shortly.",
+        detail: "The server could not reach Web3Forms.",
+      },
       { status: 502 }
     );
   }

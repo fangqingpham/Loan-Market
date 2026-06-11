@@ -2,14 +2,22 @@
 
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { Button, Input, Textarea, Icon } from "@/components/ui";
+import { APP_NAME } from "@/lib/constants";
 
 /**
  * Contact box used on the public Contact page. Renders a "Send an email" button
  * that opens a modal with a short form (name, email, subject, message). On submit
- * it POSTs to /api/contact, which emails the submission to the support inbox.
+ * it sends the message to the support inbox via Web3Forms.
  *
  * Styling mirrors FlashModal so the popup feels native to the rest of the site.
+ *
+ * Submits directly to Web3Forms from the browser. The Web3Forms access key is
+ * public by design (it's an alias for the destination inbox and safe to expose),
+ * so no server route or environment variable is needed — submissions go straight
+ * to the inbox tied to this key.
  */
+
+const WEB3FORMS_ACCESS_KEY = "2560bc60-27ca-4e2d-9afb-82ffb5472db8";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -75,23 +83,43 @@ export function ContactForm() {
       return;
     }
 
+    // Honeypot: if the hidden field was filled, treat as a bot — drop silently.
+    if (company.trim() !== "") {
+      setStatus("success");
+      return;
+    }
+
+    const subj = subject.trim();
+    const subjectLine = subj
+      ? `[${APP_NAME} contact] ${subj}`
+      : `[${APP_NAME} contact] New message from ${n}`;
+
     setStatus("submitting");
     try {
-      const res = await fetch("/api/contact", {
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
         body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: subjectLine,
+          from_name: `${APP_NAME} contact form`,
+          replyto: em,
+          botcheck: false,
           name: n,
           email: em,
-          subject: subject.trim(),
           message: msg,
-          company,
         }),
       });
-      const data = (await res.json().catch(() => ({}))) as { error?: string };
-      if (!res.ok) {
+      const data = (await res.json().catch(() => ({}))) as {
+        success?: boolean;
+        message?: string;
+      };
+      if (!data.success) {
         setStatus("error");
-        setErrorMsg(data.error || "We couldn't send your message. Please try again shortly.");
+        setErrorMsg(data.message || "We couldn't send your message. Please try again shortly.");
         return;
       }
       setStatus("success");
