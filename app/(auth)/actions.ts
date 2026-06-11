@@ -3,12 +3,15 @@
 /**
  * Authentication server actions: login, borrower signup, lender signup, logout.
  *
- * Signup uses the service-role admin client to (1) create the auth user and
- * (2) create the matching profile rows, then signs the user in with the
- * cookie-bound server client so a session is established. Validation failures
- * redirect back to the form with an `?error=` message.
+ * Signup creates the auth user via the public sign-up flow (so Supabase sends
+ * the email-confirmation link and honours the "Confirm email" setting), then
+ * uses the service-role admin client to create the matching profile rows. With
+ * confirmation enabled the user has no session until they click the link, so we
+ * route them to log in; with it disabled signUp returns a session and we go
+ * straight to the dashboard. Validation failures redirect back with `?error=`.
  */
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase-server";
 import { createAdminClient } from "@/lib/supabase-admin";
 import { dashboardPathFor } from "@/lib/auth";
@@ -29,6 +32,23 @@ function str(formData: FormData, key: string): string {
   return String(formData.get(key) ?? "").trim();
 }
 
+/**
+ * Absolute origin used to build the email-confirmation redirect link. Prefers
+ * an explicit NEXT_PUBLIC_SITE_URL; otherwise derives it from the request
+ * headers (works on Vercel and localhost). Whatever this resolves to must be on
+ * Supabase's Authentication → URL Configuration → Redirect URLs allowlist.
+ */
+function siteOrigin(): string {
+  const env = process.env.NEXT_PUBLIC_SITE_URL;
+  if (env) return env.replace(/\/+$/, "");
+  const h = headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
+  const proto =
+    h.get("x-forwarded-proto") ??
+    (host.includes("localhost") || host.startsWith("127.") ? "http" : "https");
+  return `${proto}://${host}`;
+}
+
 export async function loginAction(formData: FormData): Promise<void> {
   const email = str(formData, "email");
   const password = String(formData.get("password") ?? "");
@@ -36,7 +56,18 @@ export async function loginAction(formData: FormData): Promise<void> {
 
   const supabase = createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) fail(LOGIN, "Invalid email or password.");
+  if (error) {
+    // With email confirmation enabled, an unconfirmed account fails sign-in with
+    // an "Email not confirmed" error — guide the user rather than showing the
+    // generic invalid-credentials message.
+    const notConfirmed = (error.message ?? "").toLowerCase().includes("confirm");
+    fail(
+      LOGIN,
+      notConfirmed
+        ? "Please confirm your email first — check your inbox for the confirmation link."
+        : "Invalid email or password."
+    );
+  }
 
   let role: UserRole = "borrower";
   const { data: { user } } = await supabase.auth.getUser();
@@ -64,16 +95,27 @@ export async function signupBorrowerAction(formData: FormData): Promise<void> {
 
   const admin = createAdminClient();
   if (!admin) fail(SIGNUP_BORROWER, "Sign-ups aren't available right now. Please try again later.");
-  const { data: created, error: createError } = await admin.auth.admin.createUser({
+
+  // Create the auth user through the public sign-up flow so Supabase sends the
+  // confirmation email and honours the "Confirm email" auth setting. With
+  // confirmation enabled, no session is returned until the user verifies.
+  const supabase = createClient();
+  const { data: created, error: createError } = await supabase.auth.signUp({
     email,
     password,
-    email_confirm: true,
-    user_metadata: { full_name: fullName },
-    app_metadata: { role: "borrower" },
+    options: {
+      emailRedirectTo: `${siteOrigin()}/auth/callback?next=/borrower/dashboard`,
+      data: { full_name: fullName, role: "borrower" },
+    },
   });
-  if (createError || !created?.user) {
-    const dup = createError?.message?.toLowerCase().includes("already");
+  if (createError || !created.user) {
+    const dup = /already|registered/i.test(createError?.message ?? "");
     fail(SIGNUP_BORROWER, dup ? "An account with this email already exists." : "Could not create your account. Please try again.");
+  }
+  // With confirmation enabled, signing up with an existing email returns an
+  // obfuscated user with no identities (anti-enumeration) — treat as a duplicate.
+  if ((created.user.identities?.length ?? 0) === 0) {
+    fail(SIGNUP_BORROWER, "An account with this email already exists.");
   }
   const userId = created.user.id;
 
@@ -96,10 +138,10 @@ export async function signupBorrowerAction(formData: FormData): Promise<void> {
     fail(SIGNUP_BORROWER, "Could not set up your borrower profile. Please try again.");
   }
 
-  const supabase = createClient();
-  const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-  if (signInError) {
-    redirect(`${LOGIN}?message=${encodeURIComponent("Account created. Please log in.")}`);
+  // Email confirmation ON → no session yet; the user must click the link first.
+  // Email confirmation OFF → signUp set a session, so go straight to the dashboard.
+  if (!created.session) {
+    redirect(`${LOGIN}?message=${encodeURIComponent("Almost there — check your email and click the confirmation link to activate your account, then log in.")}`);
   }
   redirect("/borrower/dashboard");
 }
@@ -142,16 +184,25 @@ export async function signupLenderAction(formData: FormData): Promise<void> {
 
   const admin = createAdminClient();
   if (!admin) fail(SIGNUP_LENDER, "Sign-ups aren't available right now. Please try again later.");
-  const { data: created, error: createError } = await admin.auth.admin.createUser({
+
+  // Create the auth user through the public sign-up flow so Supabase sends the
+  // confirmation email and honours the "Confirm email" auth setting. With
+  // confirmation enabled, no session is returned until the user verifies.
+  const supabase = createClient();
+  const { data: created, error: createError } = await supabase.auth.signUp({
     email,
     password,
-    email_confirm: true,
-    user_metadata: { full_name: businessName },
-    app_metadata: { role: "lender" },
+    options: {
+      emailRedirectTo: `${siteOrigin()}/auth/callback?next=/lender/dashboard`,
+      data: { full_name: businessName, role: "lender" },
+    },
   });
-  if (createError || !created?.user) {
-    const dup = createError?.message?.toLowerCase().includes("already");
+  if (createError || !created.user) {
+    const dup = /already|registered/i.test(createError?.message ?? "");
     fail(SIGNUP_LENDER, dup ? "An account with this email already exists." : "Could not create your account. Please try again.");
+  }
+  if ((created.user.identities?.length ?? 0) === 0) {
+    fail(SIGNUP_LENDER, "An account with this email already exists.");
   }
   const userId = created.user.id;
 
@@ -202,10 +253,10 @@ export async function signupLenderAction(formData: FormData): Promise<void> {
     fail(SIGNUP_LENDER, "Could not set up your lender profile. Please try again.");
   }
 
-  const supabase = createClient();
-  const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-  if (signInError) {
-    redirect(`${LOGIN}?message=${encodeURIComponent("Account created. Please log in.")}`);
+  // Email confirmation ON → no session yet; the user must click the link first.
+  // Email confirmation OFF → signUp set a session, so go straight to the dashboard.
+  if (!created.session) {
+    redirect(`${LOGIN}?message=${encodeURIComponent("Almost there — check your email and click the confirmation link to activate your account, then log in.")}`);
   }
   redirect("/lender/dashboard");
 }

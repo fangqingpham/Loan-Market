@@ -6,7 +6,7 @@ import { getCurrentProfile, getLenderProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase-server";
 import { ROUTES, DAILY_FREE_CONTACTS_PER_SIDE, PRICING_VISIBLE, LICENSED_LENDER_LABEL } from "@/lib/constants";
 import { lenderTypeRequiresLicence } from "@/lib/licence-check";
-import type { LenderVerificationStatus, LicenceVerificationStatus } from "@/types/database";
+import type { LenderVerificationStatus } from "@/types/database";
 
 export const metadata: Metadata = { title: "Lender dashboard" };
 
@@ -36,11 +36,6 @@ function statusMessage(status: LenderVerificationStatus): string {
   }
 }
 
-/** True when a licensed lender's licence check failed and needs attention. */
-function licenceNeedsAttention(s: LicenceVerificationStatus): boolean {
-  return s === "suspended" || s === "not_found";
-}
-
 export default async function LenderDashboardPage({
   searchParams,
 }: {
@@ -50,13 +45,10 @@ export default async function LenderDashboardPage({
   const lender = await getLenderProfile();
 
   const status = lender?.verification_status ?? "pending_verification";
-  const licenceStatus = lender?.licence_verification_status ?? "pending";
   const isVerified = status === "verified";
   const isPrivate = lender?.is_private_lender ?? false;
   const isLicensed = lenderTypeRequiresLicence(lender?.lender_type ?? null);
   const name = profile?.fullName || "there";
-
-  const licenceFailed = isLicensed && licenceNeedsAttention(licenceStatus);
 
   // Live count of NEW contact requests this lender has STARTED today
   // (America/Toronto day) — the unit the daily anti-spam cap counts. RLS
@@ -126,38 +118,13 @@ export default async function LenderDashboardPage({
         </div>
       )}
 
-      {/* Licence-failure banner for licensed lenders (suspended / not found) */}
-      {licenceFailed && (
-        <Card className="mt-6 border-red-200 bg-red-50">
-          <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-start gap-3">
-              <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-red-600">
-                <Icon name="shield" className="h-5 w-5" />
-              </span>
-              <div>
-                <p className="text-sm font-medium text-red-800">
-                  There&apos;s a problem with your licence details.
-                </p>
-                <p className="mt-0.5 text-sm text-red-700">
-                  {lender?.licence_check_message ??
-                    "Please update your licence details to be able to post listings or contact borrowers."}
-                </p>
-              </div>
-            </div>
-            <Link href={ROUTES.lenderSettings} className="shrink-0">
-              <Button size="sm">Update licence</Button>
-            </Link>
-          </CardContent>
-        </Card>
-      )}
-
       {/* Status explanation + contextual CTA */}
       <Card className="mt-6">
         <CardContent className="space-y-4">
           <p className="text-sm text-slate-700">{statusMessage(status)}</p>
 
           {/* Licensed lender, setup still pending — informational */}
-          {isLicensed && !isVerified && !licenceFailed && (
+          {isLicensed && !isVerified && (
             <p className="rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">
               Your account is being set up from the licence number you provided at signup.
               No form is needed.
