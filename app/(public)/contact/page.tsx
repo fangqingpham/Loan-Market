@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Button, Card, CardContent, CardTitle, Badge, Icon } from "@/components/ui";
+import { Card, CardContent, CardTitle, Badge, Icon } from "@/components/ui";
+import { ContactForm } from "@/components/marketing/ContactForm";
 import { PageIntro } from "@/components/marketing/PageIntro";
 import { CTASection } from "@/components/marketing/CTASection";
 import { Section } from "@/components/marketing/Section";
@@ -12,7 +13,6 @@ export const metadata: Metadata = {
     "Contact Loan Market, operated by Nexus Milestone Inc. Email us with questions about the platform, your account, or to report a problem.",
 };
 
-const CONTACT_EMAIL = "seed2success.financial@outlook.com";
 const COMPANY = "Nexus Milestone Inc.";
 
 export default function ContactPage() {
@@ -37,16 +37,8 @@ export default function ContactPage() {
                 The fastest way to reach us. We read every message and aim to reply within a
                 couple of business days.
               </p>
-              <a
-                href={`mailto:${CONTACT_EMAIL}`}
-                className="inline-block text-sm font-medium text-brand-700 hover:underline"
-              >
-                {CONTACT_EMAIL}
-              </a>
               <div className="pt-1">
-                <a href={`mailto:${CONTACT_EMAIL}`}>
-                  <Button size="sm">Send an email</Button>
-                </a>
+                <ContactForm />
               </div>
             </CardContent>
           </Card>
